@@ -45,7 +45,7 @@ class Level2(BaseLevel):
         self.transition_over=False
 
         self.appicon = AppIcon()  # 创建AppIcon实例
-        self.appicon.load_icon(res_mgr)  # 加载图标资源
+        #self.appicon.load_icon(res_mgr)  # 加载图标资源
         self.appicon.load_window(res_mgr)  # 加载窗口资源
 
 
@@ -195,6 +195,7 @@ class Level2(BaseLevel):
 
 
     def handle_mouse_button_down(self, event):
+
         if event.button == 1:
             if self.gameMode == 1:
                 if self.dialogNum == 1:
@@ -207,15 +208,18 @@ class Level2(BaseLevel):
             elif self.gameMode == 0:
                 x, y = event.pos
                 
-                if self.appicon.is_clicked((x, y)):
+                if self.appicon.is_clicked((x, y)):#回退bug很可能就出在这儿了，调用两次click...真的是吗
+                    #print(999)
                     id= self.appicon.is_clicked((x, y))
+                    #print(9999)
                     if self.appicon.selected_icon :
                         self.appicon.display_window = id
                         self.appicon.selected_icon = None
                     else:
                         self.appicon.selected_icon = id 
                         print(id,"App icon clicked!")
-                    
+                
+                pygame.display.flip()
                     # 这里可以添加点击图标后的逻辑，比如打开一个新的窗口或执行某个操作
 
     def handle_mouse_motion(self, event):#不知道有啥用其实。
@@ -269,10 +273,7 @@ class Level2(BaseLevel):
 
         if self.isopen:
             self.transition.draw(0, 1, self.screen)
-        
+
 
         self.screen.blit(self.screen_black, (0, 0))
 
-
-
-        
