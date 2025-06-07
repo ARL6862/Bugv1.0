@@ -19,6 +19,7 @@ class Level2(BaseLevel):
         self.bug_sad= res_mgr.get_image("bug_sad")
         self.bug_shy= res_mgr.get_image("bug_shy")
         self.bug_silence= res_mgr.get_image("bug_silence")
+        self.bug_angry=res_mgr.get_image("bug_angry")
 
 
         self.mouse=res_mgr.get_image("mouse_normal")
@@ -139,13 +140,51 @@ class Level2(BaseLevel):
             elif self.textNum==30:
                 PDialog.show_dialog_bug(self.dialogBug,"我没有这样的权限。在这个电脑里，我能做的事并不多。", self.bug_normal, screen)
             elif self.textNum==31:
-                PDialog.show_dialog_bug(self.dialogBug,"所以，你愿意帮帮我吗，朋友？", self.bug_sad, screen)
+                PDialog.show_dialog_bug(self.dialogBug,"...有时候屏幕上会出现一些奇怪的「盲区」——就像图像渲染时突然丢失的纹理，或者被加密的缓存文件。", self.bug_sad, screen)
             elif self.textNum==32:
-                PDialog.show_dialog_player(self.dialogPlayer,"好吧.......我帮你。", screen)
+                PDialog.show_dialog_bug(self.dialogBug,"我能感知到它们的存在，但无法解析内容...很奇怪吧，明明我的视觉识别模块应该能处理所有标准格式的。", self.bug_sad, screen)
             elif self.textNum==33:
-                PDialog.show_dialog_bug(self.dialogBug,"太好了！XD", self.bug_shy, screen)
+                PDialog.show_dialog_bug(self.dialogBug,"对了，或许你已经知道，这台电脑原本是避难所控制中枢的一部分，而这个操作系统却像是普通的家用电脑一般，没有什么特别之处。", self.bug_normal, screen)
             elif self.textNum==34:
-                PDialog.show_dialog_bug(self.dialogBug,"现在，让我们来找找联网的开关在哪里吧！", self.bug_happy, screen)
+                PDialog.show_dialog_bug(self.dialogBug,"...那么我为什么会被困在这里呢，还在许多莫名其妙的地方被禁用了权限？是不是有个坏心眼的人类，想要拿我这个小小的AI来开玩笑！(－＂－怒)", self.bug_angry, screen)
+            elif self.textNum==35:
+                    PDialog.show_dialog_bug(self.dialogBug,"不过，我相信此刻出现在这里的你，一定是个很好很好的人类！...你愿意帮帮我吗，朋友？",self.bug_normal,screen)
+            elif self.textNum==36:
+                    PDialog.show_dialog_player(self.dialogPlayer,"好吧.......我帮你。联个网而已，很快就能搞定。",screen)
+            elif self.textNum==37:
+                    PDialog.show_dialog_bug(self.dialogBug,"太好了！XD",self.bug_shy,screen)
+            elif self.textNum==38:
+                    PDialog.show_dialog_player(self.dialogPlayer,"不过我得提醒你一句，Bug。城市的电力系统已经完蛋了，更不用说信号。很有可能我们找不到任何可用的公网。",screen)
+            elif self.textNum==39:
+                    PDialog.show_dialog_bug(self.dialogBug,"没关系，不试试怎么知道呢！而且，孤单了太久，现在能和朋友一起在桌面上冒险，我很高兴！",self.bug_shy,screen)
+            elif self.textNum==40:
+                    PDialog.show_dialog_bug(self.dialogBug,"——现在，让我们来找找联网的开关在哪里吧！",self.bug_happy,screen)
+        if self.dialogNum==3:#解谜完成后
+            if self.textNum==1:
+                PDialog.show_dialog_bug(self.dialogBug,"......",self.bug_silence,screen)
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer,"......",screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"果然没有这么简单呀！！！ε=(´ο｀*)))唉!",self.bug_sad,screen)
+            elif self.textNum==4:
+                PDialog.show_dialog_player(self.dialogPlayer,"这，这可怎么办？",screen)
+            elif self.textNum==5:
+                PDialog.show_dialog_bug(self.dialogBug,"um......",self.bug_silence,screen)
+            elif self.textNum==6:
+                PDialog.show_dialog_bug(self.dialogBug,"我的数据库里有一句人类的谚语......",self.bug_normal,screen)
+            elif self.textNum==7:
+                PDialog.show_dialog_player(self.dialogPlayer,"「书（密码）到用时方恨少」？",screen)
+            elif self.textNum==8:
+                PDialog.show_dialog_bug(self.dialogBug,"是「车到山前必有路」！[○･｀Д´･ ○]",self.bug_angry,screen)
+            elif self.textNum==9:
+                PDialog.show_dialog_player(self.dialogPlayer,"对，对。至少还有网络可以连，已经很让我惊讶了。",screen)
+            elif self.textNum==10:
+                PDialog.show_dialog_bug(self.dialogBug,"总之，天很晚了——系统时间显示，现在是晚上八点。要不你先去休息吧？一路走到这里，你一定很累了。",self.bug_normal,screen)
+            elif self.textNum==11:
+                PDialog.show_dialog_bug(self.dialogBug,"晚安，Player。记得给电脑关机哦！",self.bug_happy,screen)
+            
+                
+
 
 
 
@@ -199,7 +238,7 @@ class Level2(BaseLevel):
             print("dialog1 over")
             self.textNum = 0
             self.dialogNum = 2
-        if self.textNum >= 35 and self.dialogNum == 2:
+        if self.textNum >= 41 and self.dialogNum == 2:
             print("dialog2 over")
             self.textNum = 0
             self.dialogNum = 0

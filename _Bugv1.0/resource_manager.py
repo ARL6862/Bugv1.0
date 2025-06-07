@@ -47,6 +47,7 @@ class ResourceManager:
     def get_sound(self, key):
         return self._sounds.get(key)
     
+    
 
     #字体，记得是中文字体
     def load_font(self, key, path=None, size=36):#默认字体等线，找到合适的可以替
