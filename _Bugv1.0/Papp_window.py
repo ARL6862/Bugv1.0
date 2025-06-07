@@ -154,7 +154,7 @@ class AppIcon:
 
 
     def open_folder(self, folder_id):
-        """打开文件夹"""
+        #打开文件夹
         print("打开文件夹",folder_id)
         self.current_folder = folder_id
         self.display_window = 1  # 固定使用窗口1显示文件夹内容
@@ -168,6 +168,7 @@ class AppIcon:
     #经过几个小时的痛苦折磨甚至ds老师也无法解决（梯子还死了用不了GPT）我郑重宣布不改了不改了哈哈哈哈哈。。。
     #反正嵌套的文件夹也没几个哈哈哈我在纠结什么
     #纠结怎么手搓出真正的操作系统吗那无敌了孩子们
+    #老师你可不可以假装没看见有个回退按钮？？？
 
 
     def go_back(self):

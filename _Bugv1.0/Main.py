@@ -12,12 +12,18 @@ from resource_manager import res_mgr,music_manager
 from levels.L1 import Level1
 from levels.L2 import Level2
 from levels.L3 import Level3 
+from levels.L4 import Level4
+from levels.L5 import Level5 
+from levels.L6 import Level6 
+from levels.L7 import Level7
+from levels.L8 import Level8 
 
 
 
 def preload_resources():
     #预加载所有资源
-    res_mgr.load_image("bg_L1", "_Bugv1.0/assets/background/IMG_BG_1.jpg", (1280, 960))#关卡1开机背景
+    res_mgr.load_image("bg_L1", "_Bugv1.0/assets/background/IMG_BG_1.png", (1280, 960))#关卡1开机背景
+    res_mgr.load_image("bg_L1_2", "_Bugv1.0/assets/background/IMG_BG_1_2.png", (1280, 960))#关卡1开机背景-欢迎
     res_mgr.load_image("bg_normal", "_Bugv1.0/assets/background/IMG_BG_2.png", (1280, 960))#正常背景
 
     res_mgr.load_image("bgside_normal", "_Bugv1.0/assets/background/IMG_BGSIDE_1.jpg", (1680, 960))#正常底图
@@ -63,6 +69,10 @@ def preload_resources():
 
     res_mgr.load_image("screen_black", "_Bugv1.0/assets/else/IMG_SCREEN_BLACK.png", (1680, 960))#暗角,还需要优化
 
+    res_mgr.load_image("button_ok", "_Bugv1.0/assets/else/IMG_BUTTON_OK.png", (130, 80))#确认按钮，L1
+    res_mgr.load_image("inputbox", "_Bugv1.0/assets/else/IMG_INPUTBOX.png", (500, 80))#输入框，L1
+
+
 
 
 
@@ -99,7 +109,12 @@ def main():
     levels = {
         GameState.LEVEL1: Level1(screen, res_mgr),
         GameState.LEVEL2: Level2(screen, res_mgr),
-        GameState.LEVEL3: Level3(screen, res_mgr)
+        GameState.LEVEL3: Level3(screen, res_mgr),
+        GameState.LEVEL4: Level4(screen, res_mgr),
+        GameState.LEVEL5: Level5(screen, res_mgr),
+        GameState.LEVEL6: Level6(screen, res_mgr),
+        GameState.LEVEL7: Level7(screen, res_mgr),
+        GameState.LEVEL8: Level8(screen, res_mgr)
     }
 
 
@@ -128,6 +143,21 @@ def main():
                         config.current_state = GameState.LEVEL3
                         music_manager.play_bgm("bgm_error")
                     elif config.current_state == GameState.LEVEL3:
+                        music_manager.stop_bgm()
+                        config.current_state = GameState.LEVEL4
+                    elif config.current_state == GameState.LEVEL4:
+                        music_manager.stop_bgm()
+                        config.current_state = GameState.LEVEL5
+                    elif config.current_state == GameState.LEVEL5:
+                        music_manager.stop_bgm()
+                        config.current_state = GameState.LEVEL6
+                    elif config.current_state == GameState.LEVEL6:
+                        music_manager.stop_bgm()
+                        config.current_state = GameState.LEVEL7
+                    elif config.current_state == GameState.LEVEL7:
+                        music_manager.stop_bgm()
+                        config.current_state = GameState.LEVEL8
+                    elif config.current_state == GameState.LEVEL8:
                         music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL1
 

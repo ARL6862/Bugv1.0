@@ -45,8 +45,7 @@ class Level2(BaseLevel):
         self.transition_over=False
 
         self.appicon = AppIcon()  # 创建AppIcon实例
-        #self.appicon.load_icon(res_mgr)  # 加载图标资源
-        self.appicon.load_window(res_mgr)  # 加载窗口资源
+
 
 
     #文案全部放在这里，会巨长，其实可以用excel表格来管理啥的但我懒得搞
