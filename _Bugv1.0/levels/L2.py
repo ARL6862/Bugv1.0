@@ -3,7 +3,7 @@
 
 
 import pygame
-from Papp_window import AppIcon
+from Papp_window import AppIcon,StateBox
 from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
@@ -44,7 +44,12 @@ class Level2(BaseLevel):
         self.isopen=True #开场过渡
         self.transition_over=False
 
-        self.appicon = AppIcon()  # 创建AppIcon实例
+        self.is_online=False
+        self.is_clicked_state=False
+        self.is_clicked_start=False
+
+        self.appicon = AppIcon()  # 创建应用图标与窗口管理实例
+        self.statebox=StateBox()  #创建状态栏控制实例
 
 
 
@@ -85,7 +90,7 @@ class Level2(BaseLevel):
             elif self.textNum==2:
                 PDialog.show_dialog_bug(self.dialogBug,"你可以双击鼠标左键将它们点开；或者单击左键选中后，再右键点击，对这些图标进行“复制”、“粘贴”、“删除”等操作。",self.bug_normal,screen)
             elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"不过，有时你会缺少对部分图标进行操作的权限。",self.bug_normal,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"如果出现了Bug（不是我，是程序猿没改完的bug！）可以按“R”键重置当前状态！不过有时无法操作，是因为目前你缺少一些权限。",self.bug_normal,screen)
             elif self.textNum==4:
                 PDialog.show_dialog_bug(self.dialogBug,"——这个闪亮的小图标是“道具”！或许会有特殊的用处。你可以用鼠标左键点击，将它拾起，再点击右键将它放下，或与其他物体进行交互。",self.bug_normal,screen)
             elif self.textNum==5:
@@ -207,17 +212,18 @@ class Level2(BaseLevel):
             elif self.gameMode == 0:
                 x, y = event.pos
                 
-                if self.appicon.is_clicked((x, y)):#回退bug很可能就出在这儿了，调用两次click...真的是吗
-                    #print(999)
+                if self.appicon.is_clicked((x, y)):
                     id= self.appicon.is_clicked((x, y))
-                    #print(9999)
                     if self.appicon.selected_icon :
                         self.appicon.display_window = id
                         self.appicon.selected_icon = None
                     else:
                         self.appicon.selected_icon = id 
                         print(id,"App icon clicked!")
-                
+
+                self.appicon.is_button_clicked((x,y))
+                self.is_clicked_state=self.statebox.is_clicked_state((x,y))
+                self.is_clicked_start=self.statebox.is_clicked_start((x,y))
                 pygame.display.flip()
                     # 这里可以添加点击图标后的逻辑，比如打开一个新的窗口或执行某个操作
 
@@ -228,6 +234,9 @@ class Level2(BaseLevel):
     def handle_keydown(self, event):
         if event.key == pygame.K_DOWN:
             self.gameMode = 0
+        if event.key==pygame.K_r:
+            self.appicon.reset()
+            print("reset!!!")
 
     def update(self):
         super().update()
@@ -257,22 +266,27 @@ class Level2(BaseLevel):
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
 
-        self.screen.blit(self.bug_normal, (700, 700))  
-
         
         if self.gameMode==1:
             self.dialog(self.screen)
 
+        self.statebox.draw_state_box(self.screen,self.is_online)
 
-        x, y = pygame.mouse.get_pos()
-        self.screen.blit(self.mouse, (x - 4, y - 4))
+        if self.is_clicked_state:
+            self.statebox.draw_state_window(self.screen,self.is_clicked_state)
+
 
         self.appicon.draw_icon(self.screen)  # 绘制应用图标
         self.appicon.draw_window(self.screen)
+
+        x, y = pygame.mouse.get_pos()
+        self.screen.blit(self.mouse, (x - 4, y - 4))
 
         if self.isopen:
             self.transition.draw(0, 1, self.screen)
 
 
-        self.screen.blit(self.screen_black, (0, 0))
+
+
+        self.screen.blit(self.screen_black, (0, 0)) #暗角
 
