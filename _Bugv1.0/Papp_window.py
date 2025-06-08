@@ -1,6 +1,6 @@
-#应用图标管理、绘制
+#应用图标管理、绘制   后来包括界面上常驻的一些东西也放这儿了 比如状态栏
 #可能也要关联对应窗口？
-#关于文件夹嵌套考虑在列表加上前后项/父子项？
+#关于文件夹嵌套考虑在列表加上前后项/父子项？——然后程序员的一生就被毁了
 
 import pygame
 from resource_manager import res_mgr
@@ -27,6 +27,25 @@ class AppIcon:
         self.int_icon(res_mgr)
         self.int_window(res_mgr)
 
+    def reset(self): #想着是防止bug卡死做的重置。。
+        self.display_window = None
+        self.selected_icon = None
+        self.current_folder = None
+
+        self.icon_data = [] #桌面所有图标
+        self.window_data = []#桌面图标对应窗口 1级
+
+        self.icon_data_s = [] #桌面-文件夹内部图标-try
+        self.window_data_s = []#桌面-文件夹内文件夹对应窗口 try 2级
+
+        self.icon_data_mycon = []#桌面-我的电脑内图标
+
+        # 定义按钮区域
+        self.back_button_rect = pygame.Rect(600, 190, 85, 55)  # 返回按钮区域
+        self.close_button_rect = pygame.Rect(1216, 178, 60, 60)  # 关闭按钮区域
+
+        self.int_icon(res_mgr)
+        self.int_window(res_mgr)
 
 
     def int_icon(self,res_mgr):
@@ -127,9 +146,7 @@ class AppIcon:
                 screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
 
 
-
-
-    def is_clicked(self, pos):
+    def is_button_clicked(self, pos):
         print(self.display_window)
         # 检查是否点击了返回按钮
         if self.display_window and self.back_button_rect.collidepoint(pos):
@@ -139,7 +156,12 @@ class AppIcon:
         if self.display_window and self.close_button_rect.collidepoint(pos):
             self.close_window()
             return "close"
+        
 
+
+
+    def is_clicked(self, pos):
+        print(self.display_window)
         # 检查图标点击
         for icon in self.get_icons_in_current_folder():
             if icon["rect"].collidepoint(pos):
@@ -170,6 +192,10 @@ class AppIcon:
     #纠结怎么手搓出真正的操作系统吗那无敌了孩子们
     #老师你可不可以假装没看见有个回退按钮？？？
 
+    #6.8补充：第二天醒来花了五分钟就解决了原因是is_clicked里既有检测应用图标的又有回退按钮的，可能干啥了导致返回值混乱了吧，拆开就好
+    #目前是应用图标的click检测两次没影响，button click单独摘出来只进行一次，基本解决了  
+    # 其实还有在最外层回退会变成空白文件夹的bug，懒得改了#
+
 
     def go_back(self):
         #返回上一级文件夹
@@ -189,6 +215,8 @@ class AppIcon:
         self.display_window = None
         self.selected_icon = None
         self.current_folder = None
+
+
 
 
 
@@ -231,3 +259,63 @@ class AppIcon:
             self.draw_window_3(screen)
         elif self.display_window == 4:
             self.draw_window_4(screen)
+
+
+
+
+
+class StateBox:
+    def __init__(self):
+        self.font=res_mgr.load_font("small", size=20)#1280 73
+        self.state_box_on=res_mgr.get_image("control_online")
+        self.state_box_off=res_mgr.get_image("control_offline")
+        self.state_window_on=res_mgr.get_image("window_state_on")
+        self.state_window_off=res_mgr.get_image("window_state_off")
+
+        self.start_rect=pygame.Rect(200,880,200,80)
+        self.state_rect=pygame.Rect(1180,880,300,80)
+        self.state_window_rect=pygame.Rect(1080,480,400,400)
+
+        self.is_online=False
+        self.is_click_state=False
+
+
+
+
+    def draw_state_box(self,screen,is_online):
+        if is_online:
+            screen.blit(self.state_box_on, (200,887))
+        else:
+            screen.blit(self.state_box_off, (200,887))
+
+
+    def draw_state_window(self,screen,is_online):
+        if is_online:
+            screen.blit(self.state_window_on,(1080,480))
+        else:
+            screen.blit(self.state_window_off,(1080,480))
+
+
+
+
+
+
+    def is_clicked_start(self,pos):
+        if self.start_rect.collidepoint(pos):
+            print("start")
+            return True
+        return False
+
+    def is_clicked_state(self,pos):
+        if self.state_rect.collidepoint(pos):
+            self.is_click_state=True
+            print("state")
+            return True
+        elif self.is_click_state and not self.state_window_rect.collidepoint(pos):
+            self.is_click_state=False
+            return False
+
+
+
+
+

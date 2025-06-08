@@ -45,6 +45,9 @@ def preload_resources():
     res_mgr.load_image("window_3", "_Bugv1.0/assets/window/IMG_WIN_3.png", (772, 640))#窗口 文本文档
     res_mgr.load_image("window_4", "_Bugv1.0/assets/window/IMG_WIN_4.png", (772, 640))#窗口 设置
     res_mgr.load_image("window_5", "_Bugv1.0/assets/window/IMG_WIN_5.png", (772, 640))#窗口 回收站 占位
+    res_mgr.load_image("window_state_on", "_Bugv1.0/assets/window/IMG_WIN_STATE_ON.png", (400, 400))#状态栏右侧 窗口 联网
+    res_mgr.load_image("window_state_off", "_Bugv1.0/assets/window/IMG_WIN_STATE_OFF.png", (400, 400))#状态栏右侧 窗口 断网
+
 
     #bug七个表情差分
     res_mgr.load_image("bug_normal", "_Bugv1.0/assets/character/IMG_BUG_NORMAL.png", (100, 114))#bug立绘 正常
