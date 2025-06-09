@@ -15,8 +15,8 @@ class AppIcon:
         self.icon_data = [] #桌面所有图标
         self.window_data = []#桌面图标对应窗口 1级
 
-        self.icon_data_s = [] #桌面-文件夹内部图标-try
-        self.window_data_s = []#桌面-文件夹内文件夹对应窗口 try 2级
+        self.icon_data_myfold = [] #桌面-我的文件夹内部图标
+        self.window_data_myfold = []#桌面-我的文件夹内文件夹对应窗口 2级
 
         self.icon_data_mycon = []#桌面-我的电脑内图标
 
@@ -51,36 +51,44 @@ class AppIcon:
     def int_icon(self,res_mgr):
         self.icon_data = [
             # 桌面图标 (father为None表示在桌面)
-            {"id": 1, "type": "folder", "image": "icon_1", "rect": (250, 50), 
-             "text": "我的文件夹", "father": None, "sons": [6, 7]},
+            {"id": 1, "type": "folder", "image": "icon_8", "rect": (250, 50), 
+             "text": "我的电脑", "father": None, "sons": []},
             
-            {"id": 2, "type": "file", "image": "icon_2", "rect": (250, 200), 
-             "text": "上锁文件夹", "father": None, "sons": []},
-            
-            {"id": 3, "type": "file", "image": "icon_3", "rect": (250, 350), 
-             "text": "文档.txt", "father": None, "sons": []},
-
-            {"id": 4, "type": "file", "image": "icon_4", "rect": (250, 500), 
+            {"id": 2, "type": "folder", "image": "icon_4", "rect": (250, 200), 
              "text": "设置", "father": None, "sons": []},
-
-            {"id": 5, "type": "file", "image": "icon_5", "rect": (250, 650), 
-             "text": "回收站", "father": None, "sons": []},
             
-            # 文件夹内图标 (father指向所属文件夹)
+            {"id": 3, "type": "folder", "image": "icon_1", "rect": (250, 350), 
+             "text": "我的文件夹！", "father": None, "sons": [6,7,8]},
+
+            {"id": 4, "type": "folder", "image": "icon_2", "rect": (250, 500), 
+             "text": "也是我的文件夹！", "father": None, "sons": [9]},
+
+            {"id": 5, "type": "folder", "image": "icon_3", "rect": (250, 650), 
+             "text": "密码本.txt", "father": None, "sons": []},
+            
+            # 我的文件夹内图标 (father指向所属文件夹)
             {"id": 6, "type": "folder", "image": "icon_s_1", "rect": (680, 300), 
-             "text": "子文件夹1", "father": 1, "sons": [ 9]},
+             "text": "好吃的！", "father": 3, "sons": []},
             
             {"id": 7, "type": "folder", "image": "icon_s_1", "rect": (680, 360), 
-             "text": "子文件夹2", "father": 1, "sons": [10]},
+             "text": "xxx", "father": 3, "sons": []},
             
-            {"id": 8, "type": "file", "image": "icon_s_1", "rect": (680, 420), 
-             "text": "子文件夹3", "father": 1, "sons": []},
+            {"id": 8, "type": "folder", "image": "icon_s_1", "rect": (680, 420), 
+             "text": "xxx", "father": 3, "sons": []},
             
-            {"id": 9, "type": "file", "image": "icon_s_3", "rect": (680, 480), 
-             "text": "文档.txt", "father": 6, "sons": []},
+            {"id": 9, "type": "folder", "image": "icon_s_1", "rect": (680, 300), 
+             "text": "新建文件夹", "father": 4, "sons": [10]},
             
-            {"id": 10, "type": "file", "image": "icon_s_3", "rect": (680, 540), 
-             "text": "图片.png", "father": 7, "sons": []}
+            {"id": 10, "type": "folder", "image": "icon_s_1", "rect": (680, 300), 
+             "text": "新建文件夹（1）", "father": 9, "sons": [11]},
+
+             {"id": 11, "type": "folder", "image": "icon_s_1", "rect": (680, 300), 
+             "text": "新建文件夹（2）", "father": 10, "sons": [12]},
+
+             {"id": 12, "type": "folder", "image": "icon_s_5", "rect": (680, 300), 
+             "text": "回收站", "father": 11, "sons": []}
+
+             
         ]
         # 加载实际图片资源
         for icon in self.icon_data:
@@ -124,7 +132,7 @@ class AppIcon:
             if icon["id"]<6:
                 screen.blit(icon["image"], icon["rect"])
 
-    def draw_icon_s(self, screen):#我的文件夹中显示图标
+    def draw_icon_myfold(self, screen):#我的文件夹中显示图标
         for icon in self.icon_data:
             if icon["id"]>=6 and icon["id"]<=8:
                 screen.blit(icon["image"], icon["rect"])
@@ -144,6 +152,22 @@ class AppIcon:
                 screen.blit(icon["image"], icon["rect"])
                 icon_text = self.font.render(icon["text"], True, (0, 0, 0))
                 screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
+
+    def draw_icon_son3(self,screen):
+        for icon in self.icon_data:
+            if icon["id"]==11:
+                screen.blit(icon["image"], icon["rect"])
+                icon_text = self.font.render(icon["text"], True, (0, 0, 0))
+                screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
+                
+    def draw_icon_son4(self,screen):
+        for icon in self.icon_data:
+            if icon["id"]==12:
+                screen.blit(icon["image"], icon["rect"])
+                icon_text = self.font.render(icon["text"], True, (0, 0, 0))
+                screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
+
+
 
 
     def is_button_clicked(self, pos):
@@ -194,7 +218,7 @@ class AppIcon:
 
     #6.8补充：第二天醒来花了五分钟就解决了原因是is_clicked里既有检测应用图标的又有回退按钮的，可能干啥了导致返回值混乱了吧，拆开就好
     #目前是应用图标的click检测两次没影响，button click单独摘出来只进行一次，基本解决了  
-    # 其实还有在最外层回退会变成空白文件夹的bug，懒得改了#
+    # 其实还有在最外层回退会变成空白文件夹的bug，懒得改了#已修复
 
 
     def go_back(self):
@@ -246,19 +270,43 @@ class AppIcon:
 
     def draw_window(self, screen):
         #print("now:",self.display_window, "current folder:", self.current_folder)
-        if self.display_window == 1:  # 文件夹窗口
+        #if self.display_window == 1:  # 文件夹窗口
+        
+        # 根据当前文件夹绘制内容
+        if self.current_folder == 1:  #我的电脑
             self.draw_window_1(screen)
-            # 根据当前文件夹绘制内容
-            if self.current_folder == 1:  # 我的文件夹
-                self.draw_icon_s(screen)
-            elif self.current_folder == 6:  # 子文件夹1
-                self.draw_icon_son1(screen)
-            elif self.current_folder == 7:  # 子文件夹2
-                self.draw_icon_son2(screen)
-        elif self.display_window == 3:
-            self.draw_window_3(screen)
-        elif self.display_window == 4:
+            #self.draw_icon_s(screen)
+
+        elif self.current_folder == 2:  #设置
             self.draw_window_4(screen)
+            #self.draw_icon_son1(screen)
+
+        elif self.current_folder == 3:  #我的文件夹
+            self.draw_window_1(screen)
+            self.draw_icon_myfold(screen)
+
+        elif self.current_folder == 4:  #上锁文件夹
+            self.draw_window_1(screen)
+            self.draw_icon_son1(screen)
+
+        elif self.current_folder  == 5:#密码本 
+            self.draw_window_2(screen)
+
+        elif self.current_folder == 9:  #上锁文件夹-2
+            self.draw_window_1(screen)
+            self.draw_icon_son2(screen)
+        
+        elif self.current_folder == 10:  #上锁文件夹-3
+            self.draw_window_1(screen)
+            self.draw_icon_son3(screen)
+
+        elif self.current_folder == 11:  #上锁文件夹-回收站
+            self.draw_window_1(screen)
+            self.draw_icon_son4(screen)
+        
+
+        #又是连点两次的bug。。#改掉了
+
 
 
 
@@ -268,33 +316,62 @@ class StateBox:
     def __init__(self):
         self.font=res_mgr.load_font("small", size=20)#1280 73
         self.state_box_on=res_mgr.get_image("control_online")
+        self.state_box_on_end=res_mgr.get_image("control_online_end")
         self.state_box_off=res_mgr.get_image("control_offline")
         self.state_window_on=res_mgr.get_image("window_state_on")
         self.state_window_off=res_mgr.get_image("window_state_off")
+        self.start_window_sleep=res_mgr.get_image("window_start_sleep")
+        self.start_window_off=res_mgr.get_image("window_start_off")
+
+        
 
         self.start_rect=pygame.Rect(200,880,200,80)
         self.state_rect=pygame.Rect(1180,880,300,80)
         self.state_window_rect=pygame.Rect(1080,480,400,400)
+        self.state_window_wifi_rect=pygame.Rect(1137,565,100,100)
+        self.start_window_rect=pygame.Rect(200,700,250,180) # 俩按钮加起来
+        self.start_window_off_rect=pygame.Rect(200,700,250,80)
+        self.start_window_sleep_rect=pygame.Rect(200,800,250,80)
 
         self.is_online=False
         self.is_click_state=False
+        self.is_click_start=False
+
+        self.font=res_mgr.load_font("small", size=20)
+        self.font_wifiname=res_mgr.load_font("wifiname", size=30)
 
 
 
 
-    def draw_state_box(self,screen,is_online):
-        if is_online:
+    def draw_state_box(self,screen,is_online,is_end):
+        if is_online and not is_end:
             screen.blit(self.state_box_on, (200,887))
+        elif is_end:
+            screen.blit(self.state_box_on_end, (200,887))
         else:
             screen.blit(self.state_box_off, (200,887))
 
 
-    def draw_state_window(self,screen,is_online):
+    def draw_state_window_L2(self,screen,is_online,wifitext):
         if is_online:
             screen.blit(self.state_window_on,(1080,480))
         else:
             screen.blit(self.state_window_off,(1080,480))
+        text = self.font.render(wifitext, True, (100,0,80))
+        screen.blit(text, (1280,620))
 
+
+    def draw_state_window(self,screen):
+        screen.blit(self.state_window_on,(1080,480))
+        text = self.font.render("需要输入密码：", True, (100,0,80))
+        screen.blit(text, (1260,620))
+        text = self.font_wifiname.render("IAfOeraweB", True, (100,0,30))
+        screen.blit(text, (1260,580))
+
+
+    def draw_start_window(self,screen):
+        screen.blit(self.start_window_off,(200,700))
+        screen.blit(self.start_window_sleep,(200,800))
 
 
 
@@ -302,20 +379,68 @@ class StateBox:
 
     def is_clicked_start(self,pos):
         if self.start_rect.collidepoint(pos):
-            print("start")
+            self.is_click_start=True
+            return True
+        elif self.is_click_start and not self.start_window_rect.collidepoint(pos):
+            self.is_click_start=False
+            return False
+        elif self.is_click_start and self.start_window_rect.collidepoint(pos):
             return True
         return False
+    
+    def is_clicked_start_sleep(self,pos,is_level_end):
+        if is_level_end and self.start_window_sleep_rect.collidepoint(pos) :
+            return True
+        return False
+
+
+
+
 
     def is_clicked_state(self,pos):
         if self.state_rect.collidepoint(pos):
             self.is_click_state=True
-            print("state")
+            #print("state")
             return True
         elif self.is_click_state and not self.state_window_rect.collidepoint(pos):
             self.is_click_state=False
             return False
+        elif self.is_click_state and self.state_window_rect.collidepoint(pos):
+            return True
+        
+    def is_clicked_state_wifi(self,pos,is_state_window_on):
+        print("wifi off")
+        if is_state_window_on and self.state_window_wifi_rect.collidepoint(pos):
+            print("wifi on")
+            return True
+        
+
+
+    #还差个音量键
+            
 
 
 
 
+class TemperatureBall:
+    def __init__(self):
+        self.ball_60=res_mgr.get_image("Fball_60")
+        self.ball_120=res_mgr.get_image("Fball_120")
+        self.ball_pos=(1200,300)
+        self.ball_size=(200,200)
+        self.ball_rect = pygame.Rect(*self.ball_pos, *self.ball_size)
 
+    def is_clicked(self,pos):
+
+        return False
+    
+    def drop(self,pos):
+        self.ball_pos=pos
+        self.ball_rect = pygame.Rect(*self.ball_pos, *self.ball_size)
+
+
+    def draw(self,screen,isTup=False):
+        if isTup:
+            screen.blit(self.ball_120,self.ball_pos)
+        else:
+            screen.blit(self.ball_60,self.ball_pos)
