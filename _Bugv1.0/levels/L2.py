@@ -1,12 +1,13 @@
 #关卡2
 #目标：打开网络连接
-
+#gamode切换到0之后就回不去1了
 
 import pygame
-from Papp_window import AppIcon,StateBox
+from Papp_window import AppIcon,StateBox,TemperatureBall
 from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
+from config import GameState, config
 
 class Level2(BaseLevel):
     def __init__(self, screen, res_mgr):
@@ -44,12 +45,32 @@ class Level2(BaseLevel):
         self.isopen=True #开场过渡
         self.transition_over=False
 
+        self.transition_end = TransitionManager(1680, 960)
+        self.isend=False #结束过渡
+        self.transition_end_over=False
+
         self.is_online=False
         self.is_clicked_state=False
+        self.is_clicked_state_wifi=False
         self.is_clicked_start=False
+        self.is_clicked_start_sleep=False #true前往下一关
+
+        self.wifion_starttime=0
+        self.wifion_currenttime=0
+        self.wifion_duration=2000
+        self.statewindow_wifitext=""
+        self.wifion_over=False
+        self.goon=True
+
+        self.transition_over = False
 
         self.appicon = AppIcon()  # 创建应用图标与窗口管理实例
         self.statebox=StateBox()  #创建状态栏控制实例
+        self.tball=TemperatureBall() #创建温度球
+
+        self.font_small=res_mgr.load_font("small", size=20)
+
+        self.is_level_end=False#true可以点击睡眠
 
 
 
@@ -96,7 +117,7 @@ class Level2(BaseLevel):
             elif self.textNum==5:
                 PDialog.show_dialog_bug(self.dialogBug,"———这里是“状态栏”。在状态栏的右下角显示了一些信息，你可以左键单击此处，来对网络、音量等选项进行设置。",self.bug_normal,screen)
             elif self.textNum==6:
-                PDialog.show_dialog_bug(self.dialogBug,"如果你认为到了休息的时间,可以点击状态栏正中间的图标，那里有关机的选项。",self.bug_normal,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"如果你认为到了休息的时间,可以点击状态栏左侧的图标，那里有让电脑休眠的选项。",self.bug_normal,screen)
             elif self.textNum==7:
                 PDialog.show_dialog_bug(self.dialogBug,"这就是全部啦。不过，我一个人——一个AI待在这个小小的桌面里，每天都很无聊。所以！我会时不时地把桌面弄得很乱，弄点好玩的新东西出来！",self.bug_happy,screen)
             elif self.textNum==8:
@@ -186,6 +207,8 @@ class Level2(BaseLevel):
                 PDialog.show_dialog_bug(self.dialogBug,"总之，天很晚了——系统时间显示，现在是晚上八点。要不你先去休息吧？一路走到这里，你一定很累了。",self.bug_normal,screen)
             elif self.textNum==11:
                 PDialog.show_dialog_bug(self.dialogBug,"晚安，Player。记得给电脑关机哦！",self.bug_happy,screen)
+
+
             
                 
 
@@ -201,31 +224,46 @@ class Level2(BaseLevel):
     def handle_mouse_button_down(self, event):
 
         if event.button == 1:
+            print(self.gameMode)
             if self.gameMode == 1:
                 if self.dialogNum == 1:
                     self.textNum += 1
                 elif self.dialogNum == 2:
+                    self.textNum += 1
+                elif self.dialogNum == 3:
                     self.textNum += 1
                 print(self.textNum , self.dialogNum, self.gameMode)
 
 
             elif self.gameMode == 0:
                 x, y = event.pos
-                
-                if self.appicon.is_clicked((x, y)):
-                    id= self.appicon.is_clicked((x, y))
+                id= self.appicon.is_clicked((x, y))
+                if id is not None:
                     if self.appicon.selected_icon :
                         self.appicon.display_window = id
                         self.appicon.selected_icon = None
                     else:
                         self.appicon.selected_icon = id 
-                        print(id,"App icon clicked!")
+                        #print(id,"App icon clicked!")
 
                 self.appicon.is_button_clicked((x,y))
                 self.is_clicked_state=self.statebox.is_clicked_state((x,y))
                 self.is_clicked_start=self.statebox.is_clicked_start((x,y))
-                pygame.display.flip()
-                    # 这里可以添加点击图标后的逻辑，比如打开一个新的窗口或执行某个操作
+                if not self.is_clicked_state_wifi:
+                    self.is_clicked_state_wifi=self.statebox.is_clicked_state_wifi((x,y),self.is_clicked_state)
+                    if self.is_clicked_state_wifi:
+                        self.wifion_starttime=pygame.time.get_ticks()
+
+                if self.is_clicked_start:
+
+                    self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
+                    if self.is_clicked_start_sleep:
+                        print("准备切换到下一关")
+
+            
+                
+
+
 
     def handle_mouse_motion(self, event):#不知道有啥用其实。
         x, y = event.pos
@@ -233,28 +271,73 @@ class Level2(BaseLevel):
 
     def handle_keydown(self, event):
         if event.key == pygame.K_DOWN:
-            self.gameMode = 0
+            if self.gameMode==1:
+                #print("66")
+                self.gameMode = 0
+            elif self.gameMode==0:
+                #print("6666")
+                self.gameMode==1
         if event.key==pygame.K_r:
             self.appicon.reset()
             print("reset!!!")
 
     def update(self):
         super().update()
+        
         self.transition_over=self.transition.update()
         if self.isopen and not self.transition.is_active():
                 self.transition.start(duration=500)
-        if self.transition_over:
-            self.isopen=False
-            self.transition_over=False
-        if self.textNum >= 9 and self.dialogNum == 1:
-            print("dialog1 over")
-            self.textNum = 0
-            self.dialogNum = 2
-        if self.textNum >= 41 and self.dialogNum == 2:
-            print("dialog2 over")
-            self.textNum = 0
-            self.dialogNum = 0
-            self.gameMode = 0
+
+
+        if self.gameMode==1:
+            if self.transition_over:
+                self.isopen=False
+                self.transition_over=False
+            if self.textNum >= 9 and self.dialogNum == 1:
+                print("dialog1 over")
+                self.textNum = 0
+                self.dialogNum = 2
+            if self.textNum >= 41 and self.dialogNum == 2:
+                print("dialog2 over")
+                self.textNum = 0
+                self.dialogNum = 0
+                self.gameMode = 0
+            if self.textNum >= 12 and self.dialogNum == 3:
+                print("dialog3 over")
+                self.textNum = 0
+                self.dialogNum = 0
+                self.gameMode = 0
+                self.is_level_end=True
+
+        elif self.gameMode==0:
+            self.transition_end_over = self.transition_end.update()
+            if self.is_level_end and self.is_clicked_start_sleep:
+                if not self.transition_end.is_active():
+                    self.transition_end.start(duration=2000,text="Day 1    --->    Day 2")
+
+                # 过渡完成后切换关卡
+                if self.transition_end_over:
+                    config.current_state = GameState.LEVEL3
+                    self.transition_end_over = False
+
+            
+            if self.goon:
+                if self.is_clicked_state_wifi:
+                    self.wifion_currenttime=pygame.time.get_ticks()
+                    if self.wifion_currenttime-self.wifion_starttime>=self.wifion_duration*2:
+                        self.statewindow_wifitext="需要输入密码："
+                        self.wifion_over=True
+                        self.wifion_currenttime=0
+                        self.wifion_starttime=0
+                        self.gameMode=1
+                        self.dialogNum=3
+                        self.goon=False
+                        
+                    elif self.wifion_currenttime-self.wifion_starttime>=self.wifion_duration:
+                        self.statewindow_wifitext="已发现可用网络！"
+                    else:
+                        self.statewindow_wifitext="搜索中..."
+
 
             
 
@@ -267,17 +350,48 @@ class Level2(BaseLevel):
         self.screen.blit(self.bg, (200, 0))
 
         
-        if self.gameMode==1:
-            self.dialog(self.screen)
 
-        self.statebox.draw_state_box(self.screen,self.is_online)
 
-        if self.is_clicked_state:
-            self.statebox.draw_state_window(self.screen,self.is_clicked_state)
+
+
+
 
 
         self.appicon.draw_icon(self.screen)  # 绘制应用图标
         self.appicon.draw_window(self.screen)
+
+
+
+
+
+
+        self.statebox.draw_state_box(self.screen,self.is_clicked_state_wifi,False)
+
+        if self.is_clicked_state:
+            if self.wifion_over:
+                self.statebox.draw_state_window(self.screen)
+            else:
+                self.statebox.draw_state_window_L2(self.screen,self.is_clicked_state_wifi,self.statewindow_wifitext)
+
+
+        if self.is_clicked_start:
+            self.statebox.draw_start_window(self.screen)
+
+
+
+
+        self.tball.draw(self.screen,False)
+
+
+
+
+
+
+
+
+        if self.gameMode==1:
+            self.dialog(self.screen)
+
 
         x, y = pygame.mouse.get_pos()
         self.screen.blit(self.mouse, (x - 4, y - 4))
@@ -285,7 +399,12 @@ class Level2(BaseLevel):
         if self.isopen:
             self.transition.draw(0, 1, self.screen)
 
+        if self.is_level_end and self.is_clicked_start_sleep:
+            self.transition_end.draw(0, 0, self.screen)
 
+
+        if config.current_state == GameState.LEVEL3:  # 防止过渡完成后原场景会闪现一下
+            self.screen.fill((0, 0, 0))
 
 
         self.screen.blit(self.screen_black, (0, 0)) #暗角

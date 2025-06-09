@@ -158,5 +158,5 @@ class Level3(BaseLevel):
 
         self.screen.blit(self.screen_black, (0, 0))
 
-        text = self.font.render("level6", True, (255,255,255))
+        text = self.font.render("level3", True, (255,255,255))
         self.screen.blit(text, (20,20))
