@@ -33,18 +33,12 @@ def preload_resources():
     res_mgr.load_image("icon_3", "_Bugv1.0/assets/icon/IMG_ICON_3.png", (100, 100))#文本文档
     res_mgr.load_image("icon_4", "_Bugv1.0/assets/icon/IMG_ICON_4.png", (100, 100))#设置
     res_mgr.load_image("icon_5", "_Bugv1.0/assets/icon/IMG_ICON_5.png", (100, 100))#回收站
-    res_mgr.load_image("icon_6", "_Bugv1.0/assets/icon/IMG_ICON_6.png", (100, 100))#图片
-    res_mgr.load_image("icon_7", "_Bugv1.0/assets/icon/IMG_ICON_7.png", (100, 100))#球拍
-    res_mgr.load_image("icon_8", "_Bugv1.0/assets/icon/IMG_ICON_8.png", (100, 100))#我的电脑
 
     res_mgr.load_image("icon_s_1", "_Bugv1.0/assets/icon/IMG_ICON_1.png", (40, 40))#文件夹 小
     res_mgr.load_image("icon_s_2", "_Bugv1.0/assets/icon/IMG_ICON_2.png", (40, 40))#上锁文件夹
     res_mgr.load_image("icon_s_3", "_Bugv1.0/assets/icon/IMG_ICON_3.png", (40, 40))#文本文档
     res_mgr.load_image("icon_s_4", "_Bugv1.0/assets/icon/IMG_ICON_4.png", (40, 40))#设置
     res_mgr.load_image("icon_s_5", "_Bugv1.0/assets/icon/IMG_ICON_5.png", (40, 40))#回收站
-    res_mgr.load_image("icon_s_6", "_Bugv1.0/assets/icon/IMG_ICON_6.png", (40, 40))#图片
-    res_mgr.load_image("icon_s_7", "_Bugv1.0/assets/icon/IMG_ICON_7.png", (40, 40))#球拍
-    res_mgr.load_image("icon_s_8", "_Bugv1.0/assets/icon/IMG_ICON_8.png", (40, 40))#我的电脑
 
     res_mgr.load_image("window_1", "_Bugv1.0/assets/window/IMG_WIN_1.png", (772, 640))#窗口 文件夹
     res_mgr.load_image("window_2", "_Bugv1.0/assets/window/IMG_WIN_2.png", (772, 640))#窗口 上锁文件夹 占位
@@ -53,8 +47,6 @@ def preload_resources():
     res_mgr.load_image("window_5", "_Bugv1.0/assets/window/IMG_WIN_5.png", (772, 640))#窗口 回收站 占位
     res_mgr.load_image("window_state_on", "_Bugv1.0/assets/window/IMG_WIN_STATE_ON.png", (400, 400))#状态栏右侧 窗口 联网
     res_mgr.load_image("window_state_off", "_Bugv1.0/assets/window/IMG_WIN_STATE_OFF.png", (400, 400))#状态栏右侧 窗口 断网
-    res_mgr.load_image("window_start_off", "_Bugv1.0/assets/window/IMG_WIN_START_OFF.png", (250, 80)) #开始 关机
-    res_mgr.load_image("window_start_sleep", "_Bugv1.0/assets/window/IMG_WIN_START_SLEEP.png", (250, 80))#开始 睡眠
 
 
     #bug七个表情差分
@@ -72,8 +64,7 @@ def preload_resources():
     res_mgr.load_image("dialog_bug", "_Bugv1.0/assets/else/IMG_DIA_BUG.png", (660, 260))#bug对话框
     res_mgr.load_image("dialog_player", "_Bugv1.0/assets/else/IMG_DIA_PLAYER.png", (973, 240))#player对话框
 
-    res_mgr.load_image("control_online", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE.png", (1280, 73))#控制栏 联网 ！
-    res_mgr.load_image("control_online_end", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE_END.png", (1280, 73))#控制栏 联网成功
+    res_mgr.load_image("control_online", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE.png", (1280, 73))#控制栏 联网
     res_mgr.load_image("control_offline", "_Bugv1.0/assets/else/IMG_CONTROL_OFFLINE.png", (1280, 73))#控制栏 离线
 
     res_mgr.load_image("item_example", "_Bugv1.0/assets/item/IMG_ITEM_1.png", (50,50))#道具 示例
@@ -83,9 +74,6 @@ def preload_resources():
 
     res_mgr.load_image("button_ok", "_Bugv1.0/assets/else/IMG_BUTTON_OK.png", (130, 80))#确认按钮，L1
     res_mgr.load_image("inputbox", "_Bugv1.0/assets/else/IMG_INPUTBOX.png", (500, 80))#输入框，L1
-
-    res_mgr.load_image("Fball_60", "_Bugv1.0/assets/else/IMG_FBALL_60.png", (200, 200))#温度球60
-    res_mgr.load_image("Fball_120", "_Bugv1.0/assets/else/IMG_FBALL_120.png", (200, 200))#温度球120
 
 
 
