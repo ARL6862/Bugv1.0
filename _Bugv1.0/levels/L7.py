@@ -201,7 +201,7 @@ class Level7(BaseLevel):
             self.transition_end_over = self.transition_end.update()
             if self.is_level_end and self.is_clicked_start_sleep:
                 if not self.transition_end.is_active():
-                    self.transition_end.start(duration=2000,text="Day 2    --->    Day 3")
+                    self.transition_end.start(duration=2000,text="Day 6    --->    Day 7")
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
@@ -275,7 +275,7 @@ class Level7(BaseLevel):
             self.transition_end.draw(0, 0, self.screen)
 
 
-        if config.current_state == GameState.LEVEL4:  # 防止过渡完成后原场景会闪现一下
+        if config.current_state == GameState.LEVEL8:  # 防止过渡完成后原场景会闪现一下
             self.screen.fill((0, 0, 0))
 
 

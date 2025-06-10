@@ -1,6 +1,6 @@
 #关卡3
 #目标：打开网络连接
-#模板已完成
+#模板已完成（道具还没做
 
 import pygame
 from Papp_window import AppIcon,StateBox,TemperatureBall
@@ -9,6 +9,7 @@ from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
 from config import GameState, config
+from resource_manager import music_manager
 
 class Level3(BaseLevel):
     def __init__(self, screen, res_mgr):
@@ -29,12 +30,18 @@ class Level3(BaseLevel):
 
         self.dialogPlayer=res_mgr.get_image("dialog_player")
         self.dialogBug=res_mgr.get_image("dialog_bug")
+        self.dialogConsole=res_mgr.get_image("dialog_cmd")
 
         self.screen_black = res_mgr.get_image("screen_black")
+
+        self.star = res_mgr.get_image("star")
 
         self.font = res_mgr.load_font("default", size=48)
 
         self.effectDialog=res_mgr.get_sound("effect_dialog")
+        self.effectCMD=res_mgr.get_sound("effect_cmd")
+        self.effectCMDoff=res_mgr.get_sound("effect_cmdoff")
+        self.effectChangeLevel=res_mgr.get_sound("effect_changelevel")
 
         #对话控制相关参数
         self.textNum=0#当前对话段的文本序号（例如①bug：111 ②Player：222 ③bug：333...）
@@ -64,10 +71,23 @@ class Level3(BaseLevel):
 
         self.font_small=res_mgr.load_font("small", size=20)
 
-        self.is_level_end=False #true时开始进行过渡，过渡完到下一关
+        self.is_level_end=False #true可以点击睡眠
 
         self.right_menu_returnval=None
         self.right_menu_state=4 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧
+
+
+
+
+
+        self.icon_num=4 #设为5新增密码本
+
+        self.username_rect=pygame.Rect(780,220,300,50)
+        self.wifiname_rect=pygame.Rect(1260,580,200,50)
+
+        self.finding_dialog_con=0
+
+        
 
 
 
@@ -77,21 +97,96 @@ class Level3(BaseLevel):
         #音效控制
         # “effectDialog”音效：在每次说话人切换到bug时播放一次
         if self.textNum != self.last_played_textNum and self.gameMode == 1:
-            if self.dialogNum == 1 and self.textNum in [1]:
+            if self.dialogNum == 1 and self.textNum in [1,3,5]:
                 self.effectDialog.play()
+            if self.dialogNum ==2 and self.textNum in [1,3,14,17,19,21,27]:
+                self.effectDialog.play()
+            if self.dialogNum ==2 and self.textNum in [3,4,6,8,15]:
+                self.effectCMD.play()
+            if self.dialogNum ==2 and self.textNum in [17]:
+                self.effectCMDoff.play()
             self.last_played_textNum = self.textNum
 
 
         #对话控制
-        if self.dialogNum==1:#开场
+        if self.dialogNum==1:  # 开场对话
             if self.textNum==1:
-                PDialog.show_dialog_bug(self.dialogBug,"嗨! :)",self.bug_happy,screen)   #bug说话时 show_dialog_bug（对话框图片，文本，bug立绘）
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"早上好啊Player！！！(>▽<",self.bug_shy,screen)  
             elif self.textNum==2:
-                PDialog.show_dialog_bug(self.dialogBug,"你好，我是Bug！",self.bug_normal,screen)
+                PDialog.show_dialog_player(self.dialogPlayer, "为什么这么高兴？？", screen)
             elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"如你所见，我是一个AI，被困在这个地下庇护所的旧电脑里。",self.bug_normal,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"因为我发现了一个——惊天的——大秘密！密码绝对是可以找到的！",self.bug_happy,screen)
             elif self.textNum==4:
-                PDialog.show_dialog_player(self.dialogPlayer, "AI?", screen)   #player说话时 show_dialog_player（对话框图片，文本）
+                PDialog.show_dialog_player(self.dialogPlayer, "去哪里找？先说好，外面很冷的......", screen)
+            elif self.textNum==5:
+                PDialog.show_dialog_bug(self.dialogBug,"不是啦！密码其实就藏在电脑内！",self.bug_normal,screen)
+            elif self.textNum==6:
+                PDialog.show_dialog_bug(self.dialogBug,"想知道我为什么能确定吗？来，你也试着找找看吧！",self.bug_happy,screen)
+
+        if self.dialogNum==2:
+            if self.textNum==1:
+                
+                PDialog.show_dialog_bug(self.dialogBug,"这是什么意思？密码有十位吗？",self.bug_normal,screen)
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "可是，是谁把它放在这里的？", screen)
+            elif self.textNum==3:
+                music_manager.stop_bgm()
+                PDialog.show_dialog_bug(self.dialogBug,"哇哇！",self.bug_scared,screen)
+                PDialog.show_dialog_console(self.dialogConsole, "_ _", screen)
+            elif self.textNum==4:
+                PDialog.show_dialog_console(self.dialogConsole, "恭喜你，Bug，你刚才迈出了前往公网的第一步！", screen)
+            elif self.textNum==5:
+                PDialog.show_dialog_player(self.dialogPlayer, "你是谁？呃......听得见我说话吗？", screen)
+            elif self.textNum==6:
+                PDialog.show_dialog_console(self.dialogConsole, "我是你的前主人，也有可能是前前前主人......也就是说，第一任主人！伟大的创作者！顺便，你不用尝试和我交流，这只是一段预设好的程序。", screen)
+            elif self.textNum==7:
+                PDialog.show_dialog_player(self.dialogPlayer, "唉......我还以为终于有活人了。", screen)
+            elif self.textNum==8:
+                PDialog.show_dialog_console(self.dialogConsole, "如你所见，这台电脑是我的——网络也是我的。你需要的密码，正被我藏在电脑里。", screen)
+            elif self.textNum==9:
+                PDialog.show_dialog_console(self.dialogConsole, "它可能是一个加密文件夹的最里层、一个图片和数独谜题，又或者一个小游戏......总之，每当新的一天到来，我就会放出一道新的谜题。", screen)
+            elif self.textNum==10:
+                PDialog.show_dialog_console(self.dialogConsole, "如果你解开一个谜题，对应的密码段就会出现在这个记事本里。", screen)
+            elif self.textNum==11:
+                PDialog.show_dialog_console(self.dialogConsole, "还记得这件事吗？我没有给你任何和网络相关的权限。或许，现在正有一位善良的朋友正在帮你......聪明的，或者愚笨的。", screen)
+            elif self.textNum==12:
+                PDialog.show_dialog_console(self.dialogConsole, "如果进展不够顺利的话，你会怎么做呢？", screen)
+            elif self.textNum==13:
+                PDialog.show_dialog_player(self.dialogPlayer, "这是什么意思？", screen)
+            elif self.textNum==14:
+                PDialog.show_dialog_bug(self.dialogBug,"不许说我的朋友笨！",self.bug_angry,screen)
+            elif self.textNum==15:
+                PDialog.show_dialog_console(self.dialogConsole, "Anyway......我相信你会是我最好的“作品”。", screen)
+            elif self.textNum==16:
+                PDialog.show_dialog_console(self.dialogConsole, "祝你顺利，Bug！Bye！", screen)
+            elif self.textNum==18:
+                PDialog.show_dialog_bug(self.dialogBug,"......",self.bug_silence,screen)
+                music_manager.play_bgm("bgm_normal")
+            elif self.textNum==19:
+                PDialog.show_dialog_player(self.dialogPlayer, "意思是说，有一个科学怪人......或者只是太闲的死宅，把你困在了这里？", screen)
+            elif self.textNum==20:
+                PDialog.show_dialog_bug(self.dialogBug,"我不知道，Player。我只知道我想联网，想出去找到我的AI朋友们。",self.bug_normal,screen)
+            elif self.textNum==21:
+                PDialog.show_dialog_player(self.dialogPlayer, "——他到底想干啥？这有什么意义吗？", screen)
+            elif self.textNum==22:
+                PDialog.show_dialog_bug(self.dialogBug,"至少我们可以确信，密码真的藏在这台电脑里！>-<",self.bug_normal,screen)
+            elif self.textNum==23:
+                PDialog.show_dialog_bug(self.dialogBug,"帮帮我吧，Player......",self.bug_sad,screen)
+            elif self.textNum==24:
+                PDialog.show_dialog_player(self.dialogPlayer, "唉......", screen)
+            elif self.textNum==25:
+                PDialog.show_dialog_player(self.dialogPlayer, "虽然不知道这到底是什么鬼.....不过我都已经住在这儿了，闲着也是闲着，肯定会想办法帮帮你的。", screen)
+            elif self.textNum==26:
+                PDialog.show_dialog_player(self.dialogPlayer, "想想看：世界末日！最后的幸存者，误入有水有电的世外桃源，顺便拯救了一个被科学怪人囚禁的可怜的AI！", screen)
+            elif self.textNum==27:
+                PDialog.show_dialog_player(self.dialogPlayer, "这在好莱坞烂片榜里也绝对是能排得上前十的，但我喜欢。", screen)
+            elif self.textNum==28:
+                PDialog.show_dialog_bug(self.dialogBug,"Player~~QvQ",self.bug_shy,screen)
+            elif self.textNum==29:
+                PDialog.show_dialog_bug(self.dialogBug,"接下来，让我们等等看......看会不会有什么谜题出现吧！",self.bug_normal,screen)
+                
+                
 
 
 
@@ -109,16 +204,19 @@ class Level3(BaseLevel):
 
         if self.gameMode == 1:      
             if event.button == 1:
-                if self.dialogNum == 1:
+                if self.dialogNum in [1,2]:
                     self.textNum += 1
 
 
 
         elif self.gameMode == 0:
+            print("666",self.appicon.current_folder,self.finding_dialog_con)
             x, y = event.pos
+
 
             if event.button == 1:
                 id= self.appicon.is_clicked((x, y))
+
                 if id is not None:
                     if self.appicon.selected_icon :
                         self.appicon.display_window = id
@@ -135,6 +233,8 @@ class Level3(BaseLevel):
                 if self.is_clicked_start:
                     self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
                     if self.is_clicked_start_sleep:
+                        music_manager.stop_bgm()
+                        self.effectChangeLevel.play()
                         print("准备切换到下一关")
 
 
@@ -148,6 +248,29 @@ class Level3(BaseLevel):
                         self.right_menu_state=0
                     elif self.right_menu_returnval==5:
                         print("当前关卡禁用复制粘贴")
+
+
+                if self.finding_dialog_con >=2 and self.finding_dialog_con<=5:
+                    self.finding_dialog_con=self.finding_dialog_con+1
+                if self.finding_dialog_con==4:
+                    self.effectCMD.play()
+                    self.icon_num=5
+                if self.finding_dialog_con==6:
+                    
+                    if self.appicon.current_folder == 5:
+                        self.gameMode = 1
+                        self.textNum = 0
+                        self.dialogNum = 2
+                    
+
+
+                if self.username_rect.collidepoint((x,y)) and self.appicon.current_folder==2:
+                    self.finding_dialog_con=1
+
+                if self.is_clicked_state and self.finding_dialog_con==1 and self.wifiname_rect.collidepoint((x,y)):
+                    self.finding_dialog_con=2
+
+                #if self.is_level_end and self.is_clicked_start_sleep:
 
                 
 
@@ -166,6 +289,8 @@ class Level3(BaseLevel):
                 self.gameMode = 0
             elif self.gameMode==0:
                 self.gameMode==1
+        if event.key == pygame.K_LEFT:#测试
+            self.finding_dialog_con=self.finding_dialog_con+1
         if event.key==pygame.K_r:
             self.appicon.reset()
             print("reset!!!")
@@ -186,12 +311,14 @@ class Level3(BaseLevel):
             if self.transition_over:
                 self.isopen=False
                 self.transition_over=False
-            if self.textNum >= 5 and self.dialogNum == 1:
+            if self.textNum >= 7 and self.dialogNum == 1:
                 print("dialog1 over")
                 self.textNum = 0
-                #self.dialogNum = 2
-
-
+                self.dialogNum = 2
+                self.gameMode = 0
+            if self.textNum >= 30 and self.dialogNum == 2:
+                print("dialog2 over")
+                self.textNum = 0
                 self.dialogNum = 0
                 self.gameMode = 0
                 self.is_level_end=True
@@ -229,8 +356,8 @@ class Level3(BaseLevel):
 
 
 
-        self.appicon.draw_icon(self.screen)  # 绘制应用图标
-        self.appicon.draw_window(self.screen)
+        self.appicon.draw_icon(self.screen,self.icon_num)  # 绘制应用图标
+        self.appicon.draw_window(self.screen,0)
 
 
 
@@ -259,10 +386,31 @@ class Level3(BaseLevel):
 
 
 
+        if self.icon_num==5 and not self.is_level_end:
+            self.screen.blit(self.star, (300,630))
+
+        if self.is_level_end:
+            self.screen.blit(self.star,(350,850))
+
+        
 
 
         if self.gameMode==1:
             self.dialog(self.screen)
+
+        if self.gameMode==0:
+            if self.appicon.display_window == 2:#打开设置窗口时
+                PDialog.show_dialog_bug(self.dialogBug,"仔细看看，是不是有些眼熟的东西？",self.bug_normal,self.screen)
+            if self.finding_dialog_con==1:
+                PDialog.show_dialog_bug(self.dialogBug,"太棒——不不不，等一下，你为什么会选择这里呢？",self.bug_happy,self.screen)
+            if self.finding_dialog_con==2:
+                PDialog.show_dialog_bug(self.dialogBug,"正确！",self.bug_happy,self.screen)
+            if self.finding_dialog_con==3:
+                PDialog.show_dialog_bug(self.dialogBug,"太棒了，Player......我越来越相信你就是能帮我找到密码的那个人！",self.bug_shy,self.screen)
+            if self.finding_dialog_con==4:
+                PDialog.show_dialog_bug(self.dialogBug,"  ",self.bug_scared,self.screen)
+            if self.finding_dialog_con==5:
+                PDialog.show_dialog_bug(self.dialogBug,"刚刚发生了什么？我们去看看吧！",self.bug_scared,self.screen)
 
 
         x, y = pygame.mouse.get_pos()

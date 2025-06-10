@@ -59,7 +59,7 @@ class ContextMenu:
         self.visible = True
         #self.pos = mouse_pos
 
-        print(self.current_option['rect'])
+        #print(self.current_option['rect'])
 
         
         if self.CENTER_AREA_RECT.collidepoint(mouse_pos):#点击屏幕范围内
@@ -83,14 +83,14 @@ class ContextMenu:
         self.rect=pygame.Rect(*self.pos,*self.size)
         self.options[self.menu_state]['rect'] = self.rect
         self.current_option['rect']=self.rect
-        print(self.current_option['rect'])
+        #print(self.current_option['rect'])
 
 
 
 
     
     def handle_left_click(self, mouse_pos,menu_state):
-        print(self.current_option['rect'])
+        #print(self.current_option['rect'])
 
         """处理左键点击不同情况"""
         if self.current_option['rect'].collidepoint(mouse_pos):

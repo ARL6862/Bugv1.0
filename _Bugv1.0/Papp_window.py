@@ -11,6 +11,7 @@ class AppIcon:
         self.display_window=None
         self.current_folder = None  # 当前打开的文件夹ID
         self.font=res_mgr.load_font("small", size=20)
+        self.font_username=res_mgr.load_font("username", size=40)
 
         self.icon_data = [] #桌面所有图标
         self.window_data = []#桌面图标对应窗口 1级
@@ -127,10 +128,16 @@ class AppIcon:
 
 
 
-    def draw_icon(self, screen):
+    def draw_icon(self, screen,num):
         for icon in self.icon_data :
-            if icon["id"]<6:
+            if icon["id"]<=num:
                 screen.blit(icon["image"], icon["rect"])
+                icon_text = self.font.render(icon["text"], True, (255, 255, 255))
+                text_rect = icon_text.get_rect()
+                text_rect.centerx = icon["rect"].centerx
+                text_rect.top = icon["rect"].bottom + 5
+                screen.blit(icon_text, text_rect)
+
 
     def draw_icon_myfold(self, screen):#我的文件夹中显示图标
         for icon in self.icon_data:
@@ -268,7 +275,7 @@ class AppIcon:
 
 
 
-    def draw_window(self, screen):
+    def draw_window(self, screen,password_num):
         #print("now:",self.display_window, "current folder:", self.current_folder)
         #if self.display_window == 1:  # 文件夹窗口
         
@@ -279,6 +286,8 @@ class AppIcon:
 
         elif self.current_folder == 2:  #设置
             self.draw_window_4(screen)
+            username_text = self.font_username.render("IAfOeraweB", True, (100, 0, 80))
+            screen.blit(username_text,(780,220))
             #self.draw_icon_son1(screen)
 
         elif self.current_folder == 3:  #我的文件夹
@@ -291,6 +300,11 @@ class AppIcon:
 
         elif self.current_folder  == 5:#密码本 
             self.draw_window_2(screen)
+            password_text_title = self.font_username.render("IAfOeraweB password :", True, (80, 0, 50))
+            if password_num==0:
+                password_text = self.font_username.render("[] [] [] [] [] [] [] [] [] []", True, (140, 0, 80))
+            screen.blit(password_text_title,(730,200))
+            screen.blit(password_text,(680,300))
 
         elif self.current_folder == 9:  #上锁文件夹-2
             self.draw_window_1(screen)

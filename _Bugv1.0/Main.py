@@ -71,6 +71,7 @@ def preload_resources():
 
     res_mgr.load_image("dialog_bug", "_Bugv1.0/assets/else/IMG_DIA_BUG.png", (660, 260))#bug对话框
     res_mgr.load_image("dialog_player", "_Bugv1.0/assets/else/IMG_DIA_PLAYER.png", (973, 240))#player对话框
+    res_mgr.load_image("dialog_cmd", "_Bugv1.0/assets/window/IMG_WIN_CMD.png", (550, 350))#cmd对话框
 
     res_mgr.load_image("control_online", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE.png", (1280, 73))#控制栏 联网 ！
     res_mgr.load_image("control_online_end", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE_END.png", (1280, 73))#控制栏 联网成功
@@ -86,6 +87,7 @@ def preload_resources():
 
     res_mgr.load_image("Fball_60", "_Bugv1.0/assets/else/IMG_FBALL_60.png", (200, 200))#温度球60
     res_mgr.load_image("Fball_120", "_Bugv1.0/assets/else/IMG_FBALL_120.png", (200, 200))#温度球120
+    res_mgr.load_image("star", "_Bugv1.0/assets/else/IMG_STAR.png", (100, 100))#星星
 
 
 
@@ -102,6 +104,9 @@ def preload_resources():
 
     res_mgr.load_sound("effect_dialog", "_Bugv1.0/assets/sound/effect_po.mp3")#对话音效
     res_mgr.load_sound("effect_wakeup", "_Bugv1.0/assets/sound/effect_wakeup.mp3")#开机音效
+    res_mgr.load_sound("effect_changelevel", "_Bugv1.0/assets/sound/effect_changelevel.mp3")#转场音效
+    res_mgr.load_sound("effect_cmd", "_Bugv1.0/assets/sound/effect_cmd.mp3")#cmd音效
+    res_mgr.load_sound("effect_cmdoff", "_Bugv1.0/assets/sound/effect_cmdoff.mp3")#cmd音效 关闭
 
 
 
@@ -154,26 +159,26 @@ def main():
                         config.current_state = GameState.LEVEL2
                         music_manager.play_bgm("bgm_normal")
                     elif config.current_state == GameState.LEVEL2:
-                        music_manager.stop_bgm()
+                        #music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL3
-                        music_manager.play_bgm("bgm_error")
+                        #music_manager.play_bgm("bgm_error")
                     elif config.current_state == GameState.LEVEL3:
-                        music_manager.stop_bgm()
+                        #music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL4
                     elif config.current_state == GameState.LEVEL4:
-                        music_manager.stop_bgm()
+                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL5
                     elif config.current_state == GameState.LEVEL5:
-                        music_manager.stop_bgm()
+                        #music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL6
                     elif config.current_state == GameState.LEVEL6:
-                        music_manager.stop_bgm()
+                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL7
                     elif config.current_state == GameState.LEVEL7:
-                        music_manager.stop_bgm()
+                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL8
                     elif config.current_state == GameState.LEVEL8:
-                        music_manager.stop_bgm()
+                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL1
 
                         

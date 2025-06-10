@@ -201,7 +201,7 @@ class Level4(BaseLevel):
             self.transition_end_over = self.transition_end.update()
             if self.is_level_end and self.is_clicked_start_sleep:
                 if not self.transition_end.is_active():
-                    self.transition_end.start(duration=2000,text="Day 2    --->    Day 3")
+                    self.transition_end.start(duration=2000,text="Day 3    --->    Day 4")
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
@@ -229,8 +229,8 @@ class Level4(BaseLevel):
 
 
 
-        self.appicon.draw_icon(self.screen)  # 绘制应用图标
-        self.appicon.draw_window(self.screen)
+        self.appicon.draw_icon(self.screen,5)  # 绘制应用图标
+        self.appicon.draw_window(self.screen,0)
 
 
 
@@ -275,7 +275,7 @@ class Level4(BaseLevel):
             self.transition_end.draw(0, 0, self.screen)
 
 
-        if config.current_state == GameState.LEVEL4:  # 防止过渡完成后原场景会闪现一下
+        if config.current_state == GameState.LEVEL5:  # 防止过渡完成后原场景会闪现一下
             self.screen.fill((0, 0, 0))
 
 

@@ -11,6 +11,8 @@ DIALOG_PLAYER_TEXT_OFFSET = (50, 80)  # 相对于对话框的偏移量
 DIALOG_BUG_RECT = (750, 100)
 DIALOG_BUG_TEXT_OFFSET = (50, 60)     # 相对于对话框的偏移量
 DIALOG_BUG_CHA_OFFSET = (600, -30)      # Bug立绘相对于对话框的偏移量
+DIALOG_CONSOLE_RECT = (350, 200)
+DIALOG_CONSOLE_TEXT_OFFSET = (50, 80)  # 相对于对话框的偏移量
 
 class TypewriterText:
     def __init__(self, char_delay=30):
@@ -119,17 +121,10 @@ class TypewriterText:
 # 创建全局的打字机效果实例
 typewriter_player = TypewriterText()
 typewriter_bug = TypewriterText()
+typewriter_console = TypewriterText()
 
 def show_dialog_player(dialog_img, dialog_text, screen):
-    """
-    显示带有打字机效果的对话框(玩家)
-    参数:
-        dialog_img: 对话框背景图像
-        dialog_text: 要显示的文本
-        screen: 目标Surface
-    返回:
-        bool: 文本是否显示完成
-    """
+
     # 获取对话框尺寸
     dialog_width = dialog_img.get_width()
     font = pygame.font.Font("_Bugv1.0/assets/font/Deng.ttf", 28)
@@ -153,16 +148,12 @@ def show_dialog_player(dialog_img, dialog_text, screen):
     
     return typewriter_player.is_complete
 
+
+
+
+
 def show_dialog_bug(dialog_img, dialog_text, bug_img, screen):
-    """
-    显示带有打字机效果的对话框(Bug)
-    参数:
-        dialog_img: 对话框背景图像
-        dialog_text: 要显示的文本
-        screen: 目标Surface
-    返回:
-        bool: 文本是否显示完成
-    """
+
     # 获取对话框尺寸
     dialog_width = dialog_img.get_width()
     font = pygame.font.Font("_Bugv1.0/assets/font/Deng.ttf", 22)
@@ -190,5 +181,33 @@ def show_dialog_bug(dialog_img, dialog_text, bug_img, screen):
     typewriter_bug.draw(screen, font, text_pos, 1)
     
     return typewriter_bug.is_complete
+
+
+
+
+def show_dialog_console(dialog_img, dialog_text, screen):
+
+    # 获取对话框尺寸
+    dialog_width = dialog_img.get_width()
+    font = pygame.font.Font("_Bugv1.0/assets/font/Deng.ttf", 22)
+    
+    # 如果传入新文本，重置打字机效果
+    if typewriter_console.full_text != dialog_text:
+        typewriter_console.set_text(dialog_text, font, dialog_width - 100)
+    
+    # 更新打字机效果
+    typewriter_console.update()
+    
+    # 绘制对话框
+    screen.blit(dialog_img, DIALOG_CONSOLE_RECT)
+
+    # 计算文本起始位置
+    text_pos = (DIALOG_CONSOLE_RECT[0] + DIALOG_CONSOLE_TEXT_OFFSET[0],
+                DIALOG_CONSOLE_RECT[1] + DIALOG_CONSOLE_TEXT_OFFSET[1])
+    
+    # 绘制文本
+    typewriter_console.draw(screen, font, text_pos, 0)
+    
+    return typewriter_console.is_complete
 
 

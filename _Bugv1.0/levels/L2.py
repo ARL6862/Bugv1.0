@@ -1,8 +1,9 @@
 #关卡2
 #目标：打开网络连接
-
+#还差道具和新手教程提示
 
 import pygame
+from resource_manager import music_manager
 from Papp_window import AppIcon,StateBox,TemperatureBall
 from PRightClickMenu import ContextMenu
 from .level_base import BaseLevel
@@ -33,9 +34,12 @@ class Level2(BaseLevel):
 
         self.screen_black = res_mgr.get_image("screen_black")
 
+        self.star = res_mgr.get_image("star")
+
         self.font = res_mgr.load_font("default", size=48)
 
         self.effectDialog=res_mgr.get_sound("effect_dialog")
+        self.effectChangeLevel=res_mgr.get_sound("effect_changelevel")
 
         #对话控制相关参数
         self.textNum=0#当前对话段的文本序号（例如①bug：111 ②Player：222 ③bug：333...）
@@ -88,7 +92,9 @@ class Level2(BaseLevel):
         if self.textNum != self.last_played_textNum and self.gameMode == 1:
             if self.dialogNum == 1 and self.textNum in [1,5, 8]:
                 self.effectDialog.play()
-            elif self.dialogNum == 2 and self.textNum in [1,9,11,14,17,19,21,24,30,33]:
+            elif self.dialogNum == 2 and self.textNum in [1,9,11,14,17,19,21,24,30,33,37,39]:
+                self.effectDialog.play()
+            elif self.dialogNum == 3 and self.textNum in [1,3,5,8,10]:
                 self.effectDialog.play()
             self.last_played_textNum = self.textNum
 
@@ -113,13 +119,13 @@ class Level2(BaseLevel):
                 PDialog.show_dialog_bug(self.dialogBug, "就是这个电脑桌面。我一直在这里运行，24小时不间断，就像人类每天的“生活”。所以我想，这里就是我的房间。", self.bug_normal,screen)
         if self.dialogNum==2:#新手教程
             if self.textNum==1:
-                PDialog.show_dialog_bug(self.dialogBug,"——这是一些“桌面应用程序”！就像你平时使用的电脑一样，有“我的电脑”、“浏览器”、“文件夹”等各种东西。",self.bug_normal,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"——这是一些“桌面应用程序”！就像你平时使用的电脑一样，有“我的电脑”、“文件夹”等各种东西。",self.bug_normal,screen)
             elif self.textNum==2:
                 PDialog.show_dialog_bug(self.dialogBug,"你可以双击鼠标左键将它们点开；或者单击左键选中后，再右键点击，对这些图标进行“复制”、“粘贴”、“删除”等操作。",self.bug_normal,screen)
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"如果出现了Bug（不是我，是程序猿没改完的bug！）可以按“R”键重置当前状态！不过有时无法操作，是因为目前你缺少一些权限。",self.bug_normal,screen)
             elif self.textNum==4:
-                PDialog.show_dialog_bug(self.dialogBug,"——这个闪亮的小图标是“道具”！或许会有特殊的用处。你可以用鼠标左键点击，将它拾起，再点击右键将它放下，或与其他物体进行交互。",self.bug_normal,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"——这个是“道具”！或许会有特殊的用处。你可以用鼠标左键点击，将它拾起，再点击右键将它放下，或与其他物体进行交互。",self.bug_normal,screen)
             elif self.textNum==5:
                 PDialog.show_dialog_bug(self.dialogBug,"———这里是“状态栏”。在状态栏的右下角显示了一些信息，你可以左键单击此处，来对网络、音量等选项进行设置。",self.bug_normal,screen)
             elif self.textNum==6:
@@ -212,7 +218,7 @@ class Level2(BaseLevel):
             elif self.textNum==10:
                 PDialog.show_dialog_bug(self.dialogBug,"总之，天很晚了——系统时间显示，现在是晚上八点。要不你先去休息吧？一路走到这里，你一定很累了。",self.bug_normal,screen)
             elif self.textNum==11:
-                PDialog.show_dialog_bug(self.dialogBug,"晚安，Player。记得给电脑关机哦！",self.bug_happy,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"晚安，Player。记得让电脑休眠哦！",self.bug_happy,screen)
 
 
             
@@ -269,6 +275,8 @@ class Level2(BaseLevel):
 
                     self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
                     if self.is_clicked_start_sleep:
+                        music_manager.stop_bgm()
+                        self.effectChangeLevel.play()
                         print("准备切换到下一关")
 
 
@@ -350,6 +358,7 @@ class Level2(BaseLevel):
         elif self.gameMode==0:
             self.transition_end_over = self.transition_end.update()
             if self.is_level_end and self.is_clicked_start_sleep:
+                
                 if not self.transition_end.is_active():
                     self.transition_end.start(duration=2000,text="Day 1    --->    Day 2")
 
@@ -395,8 +404,8 @@ class Level2(BaseLevel):
 
 
 
-        self.appicon.draw_icon(self.screen)  # 绘制应用图标
-        self.appicon.draw_window(self.screen)
+        self.appicon.draw_icon(self.screen,4)  # 绘制应用图标
+        self.appicon.draw_window(self.screen,0)
 
 
 
@@ -423,6 +432,22 @@ class Level2(BaseLevel):
 
         self.rightmenu.draw(self.screen)
 
+
+        #1 4 5 6
+        if self.dialogNum==2:
+            if self.textNum in [1,2,3]:
+                self.screen.blit(self.star,(300,20))
+            if self.textNum==4:
+                self.screen.blit(self.star,(1170,380))
+            if self.textNum==5:
+                self.screen.blit(self.star,(1180,850))
+            if self.textNum==6:
+                self.screen.blit(self.star,(350,850))
+
+        if self.is_level_end and self.is_clicked_start:
+            self.screen.blit(self.star,(350,770))
+        elif self.is_level_end:
+            self.screen.blit(self.star,(350,850))
 
 
 
