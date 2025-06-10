@@ -1,9 +1,10 @@
 #关卡2
 #目标：打开网络连接
-#gamode切换到0之后就回不去1了
+
 
 import pygame
 from Papp_window import AppIcon,StateBox,TemperatureBall
+from PRightClickMenu import ContextMenu
 from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
@@ -21,6 +22,8 @@ class Level2(BaseLevel):
         self.bug_shy= res_mgr.get_image("bug_shy")
         self.bug_silence= res_mgr.get_image("bug_silence")
         self.bug_angry=res_mgr.get_image("bug_angry")
+        self.bug_scared=res_mgr.get_image("bug_scared")
+
 
 
         self.mouse=res_mgr.get_image("mouse_normal")
@@ -67,11 +70,14 @@ class Level2(BaseLevel):
         self.appicon = AppIcon()  # 创建应用图标与窗口管理实例
         self.statebox=StateBox()  #创建状态栏控制实例
         self.tball=TemperatureBall() #创建温度球
+        self.rightmenu=ContextMenu(self.screen,0) #创建右键菜单栏
 
         self.font_small=res_mgr.load_font("small", size=20)
 
         self.is_level_end=False#true可以点击睡眠
 
+        self.right_menu_returnval=None
+        self.right_menu_state=4 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧
 
 
     #文案全部放在这里，会巨长，其实可以用excel表格来管理啥的但我懒得搞
@@ -223,20 +229,25 @@ class Level2(BaseLevel):
 
     def handle_mouse_button_down(self, event):
 
-        if event.button == 1:
-            print(self.gameMode)
-            if self.gameMode == 1:
+        self.rightmenu.kkk()
+
+        if self.gameMode == 1:      
+            if event.button == 1:
                 if self.dialogNum == 1:
                     self.textNum += 1
                 elif self.dialogNum == 2:
                     self.textNum += 1
                 elif self.dialogNum == 3:
                     self.textNum += 1
-                print(self.textNum , self.dialogNum, self.gameMode)
+                #print(self.textNum , self.dialogNum, self.gameMode)
 
 
-            elif self.gameMode == 0:
-                x, y = event.pos
+        elif self.gameMode == 0:
+            x, y = event.pos
+
+
+            if event.button == 1:
+                print(x,",",y)
                 id= self.appicon.is_clicked((x, y))
                 if id is not None:
                     if self.appicon.selected_icon :
@@ -259,6 +270,33 @@ class Level2(BaseLevel):
                     self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
                     if self.is_clicked_start_sleep:
                         print("准备切换到下一关")
+
+
+
+
+                if self.rightmenu.handle_left_click((x,y),self.right_menu_state):
+                    self.right_menu_returnval=self.rightmenu.get_return_value()
+                    #print("returnval ",self.right_menu_returnval)
+                    if self.right_menu_returnval==0:
+                        self.right_menu_state=1
+                        #print("return ",self.right_menu_returnval)
+                    elif self.right_menu_returnval==1 or self.right_menu_returnval==None:
+                        self.right_menu_state=0
+                        #print("return ",self.right_menu_returnval)
+                    elif self.right_menu_returnval==5:
+                        print("当前关卡禁用复制粘贴")
+
+                
+                
+
+
+
+
+
+            if event.button==3:
+                x, y = event.pos
+                print(x,",",y)
+                self.rightmenu.show_menu((x,y),self.right_menu_state)
 
             
                 
@@ -381,6 +419,9 @@ class Level2(BaseLevel):
 
 
         self.tball.draw(self.screen,False)
+
+
+        self.rightmenu.draw(self.screen)
 
 
 

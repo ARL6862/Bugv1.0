@@ -171,7 +171,7 @@ class AppIcon:
 
 
     def is_button_clicked(self, pos):
-        print(self.display_window)
+        #print(self.display_window)
         # 检查是否点击了返回按钮
         if self.display_window and self.back_button_rect.collidepoint(pos):
             self.go_back()
@@ -185,7 +185,7 @@ class AppIcon:
 
 
     def is_clicked(self, pos):
-        print(self.display_window)
+        #print(self.display_window)
         # 检查图标点击
         for icon in self.get_icons_in_current_folder():
             if icon["rect"].collidepoint(pos):
@@ -352,6 +352,9 @@ class StateBox:
             screen.blit(self.state_box_off, (200,887))
 
 
+    
+
+
     def draw_state_window_L2(self,screen,is_online,wifitext):
         if is_online:
             screen.blit(self.state_window_on,(1080,480))
@@ -409,7 +412,7 @@ class StateBox:
             return True
         
     def is_clicked_state_wifi(self,pos,is_state_window_on):
-        print("wifi off")
+        #print("wifi off")
         if is_state_window_on and self.state_window_wifi_rect.collidepoint(pos):
             print("wifi on")
             return True
