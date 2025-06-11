@@ -85,7 +85,7 @@ class Level3(BaseLevel):
         self.username_rect=pygame.Rect(780,220,300,50)
         self.wifiname_rect=pygame.Rect(1260,580,200,50)
 
-        self.finding_dialog_con=0
+        self.finding_dialog_con=0#这里屎山了。
 
         
 
@@ -250,6 +250,7 @@ class Level3(BaseLevel):
                         print("当前关卡禁用复制粘贴")
 
 
+
                 if self.finding_dialog_con >=2 and self.finding_dialog_con<=5:
                     self.finding_dialog_con=self.finding_dialog_con+1
                 if self.finding_dialog_con==4:
@@ -261,6 +262,8 @@ class Level3(BaseLevel):
                         self.gameMode = 1
                         self.textNum = 0
                         self.dialogNum = 2
+
+                    
                     
 
 
@@ -318,6 +321,7 @@ class Level3(BaseLevel):
                 self.gameMode = 0
             if self.textNum >= 30 and self.dialogNum == 2:
                 print("dialog2 over")
+                self.finding_dialog_con=-2
                 self.textNum = 0
                 self.dialogNum = 0
                 self.gameMode = 0
@@ -399,12 +403,12 @@ class Level3(BaseLevel):
             self.dialog(self.screen)
 
         if self.gameMode==0:
-            if self.appicon.display_window == 2:#打开设置窗口时
-                PDialog.show_dialog_bug(self.dialogBug,"仔细看看，是不是有些眼熟的东西？",self.bug_normal,self.screen)
+            if self.appicon.current_folder == 2 and self.finding_dialog_con in [-1,0]:#打开设置窗口时
+                PDialog.show_dialog_bug_set(self.dialogBug,"仔细看看，是不是有些眼熟的东西？",self.bug_normal,self.screen,(750,300))
             if self.finding_dialog_con==1:
-                PDialog.show_dialog_bug(self.dialogBug,"太棒——不不不，等一下，你为什么会选择这里呢？",self.bug_happy,self.screen)
+                PDialog.show_dialog_bug_set(self.dialogBug,"太棒——不不不，等一下，你为什么会选择这里呢？",self.bug_happy,self.screen,(750,300))
             if self.finding_dialog_con==2:
-                PDialog.show_dialog_bug(self.dialogBug,"正确！",self.bug_happy,self.screen)
+                PDialog.show_dialog_bug_set(self.dialogBug,"正确！网络名和用户名是一致的，也就是说电脑的主人就是网络的主人......而密码有可能被记录在这台电脑里！",self.bug_happy,self.screen,(750,300))
             if self.finding_dialog_con==3:
                 PDialog.show_dialog_bug(self.dialogBug,"太棒了，Player......我越来越相信你就是能帮我找到密码的那个人！",self.bug_shy,self.screen)
             if self.finding_dialog_con==4:

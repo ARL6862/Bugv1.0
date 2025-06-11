@@ -1,6 +1,6 @@
 #关卡3
 #目标：打开网络连接
-#模板已完成
+#模板已完成（道具还没做
 
 import pygame
 from Papp_window import AppIcon,StateBox,TemperatureBall
@@ -9,6 +9,7 @@ from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
 from config import GameState, config
+from resource_manager import music_manager
 
 class Level4(BaseLevel):
     def __init__(self, screen, res_mgr):
@@ -29,12 +30,18 @@ class Level4(BaseLevel):
 
         self.dialogPlayer=res_mgr.get_image("dialog_player")
         self.dialogBug=res_mgr.get_image("dialog_bug")
+        self.dialogConsole=res_mgr.get_image("dialog_cmd")
 
         self.screen_black = res_mgr.get_image("screen_black")
+
+        self.star = res_mgr.get_image("star")
 
         self.font = res_mgr.load_font("default", size=48)
 
         self.effectDialog=res_mgr.get_sound("effect_dialog")
+        self.effectCMD=res_mgr.get_sound("effect_cmd")
+        self.effectCMDoff=res_mgr.get_sound("effect_cmdoff")
+        self.effectChangeLevel=res_mgr.get_sound("effect_changelevel")
 
         #对话控制相关参数
         self.textNum=0#当前对话段的文本序号（例如①bug：111 ②Player：222 ③bug：333...）
@@ -64,10 +71,15 @@ class Level4(BaseLevel):
 
         self.font_small=res_mgr.load_font("small", size=20)
 
-        self.is_level_end=False #true时开始进行过渡，过渡完到下一关
+        self.is_level_end=False #true可以点击睡眠
 
         self.right_menu_returnval=None
         self.right_menu_state=4 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧
+
+
+
+
+        
 
 
 
@@ -77,29 +89,22 @@ class Level4(BaseLevel):
         #音效控制
         # “effectDialog”音效：在每次说话人切换到bug时播放一次
         if self.textNum != self.last_played_textNum and self.gameMode == 1:
-            if self.dialogNum == 1 and self.textNum in [1]:
+            if self.dialogNum == 1 and self.textNum in [1,3]:
                 self.effectDialog.play()
             self.last_played_textNum = self.textNum
 
 
         #对话控制
-        if self.dialogNum==1:#开场
+        if self.dialogNum==1:  # 开场对话
             if self.textNum==1:
-                PDialog.show_dialog_bug(self.dialogBug,"嗨! :)",self.bug_happy,screen)   #bug说话时 show_dialog_bug（对话框图片，文本，bug立绘）
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"早上好啊Player！！！(>▽<",self.bug_shy,screen)  
             elif self.textNum==2:
-                PDialog.show_dialog_bug(self.dialogBug,"你好，我是Bug！",self.bug_normal,screen)
+                PDialog.show_dialog_player(self.dialogPlayer, "为什么这么高兴？？", screen)
             elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"如你所见，我是一个AI，被困在这个地下庇护所的旧电脑里。",self.bug_normal,screen)
-            elif self.textNum==4:
-                PDialog.show_dialog_player(self.dialogPlayer, "AI?", screen)   #player说话时 show_dialog_player（对话框图片，文本）
-
-
-
-
-
-
-
-
+                PDialog.show_dialog_bug(self.dialogBug,"因为我发现了一个——惊天的——大秘密！密码绝对是可以找到的！",self.bug_happy,screen)
+                
+                
 
 
 
@@ -109,16 +114,19 @@ class Level4(BaseLevel):
 
         if self.gameMode == 1:      
             if event.button == 1:
-                if self.dialogNum == 1:
+                if self.dialogNum in [1,2]:
                     self.textNum += 1
 
 
 
         elif self.gameMode == 0:
+            
             x, y = event.pos
+
 
             if event.button == 1:
                 id= self.appicon.is_clicked((x, y))
+
                 if id is not None:
                     if self.appicon.selected_icon :
                         self.appicon.display_window = id
@@ -135,6 +143,8 @@ class Level4(BaseLevel):
                 if self.is_clicked_start:
                     self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
                     if self.is_clicked_start_sleep:
+                        music_manager.stop_bgm()
+                        self.effectChangeLevel.play()
                         print("准备切换到下一关")
 
 
@@ -148,6 +158,7 @@ class Level4(BaseLevel):
                         self.right_menu_state=0
                     elif self.right_menu_returnval==5:
                         print("当前关卡禁用复制粘贴")
+
 
                 
 
@@ -166,6 +177,8 @@ class Level4(BaseLevel):
                 self.gameMode = 0
             elif self.gameMode==0:
                 self.gameMode==1
+        if event.key == pygame.K_LEFT:#测试
+            self.finding_dialog_con=self.finding_dialog_con+1
         if event.key==pygame.K_r:
             self.appicon.reset()
             print("reset!!!")
@@ -186,15 +199,17 @@ class Level4(BaseLevel):
             if self.transition_over:
                 self.isopen=False
                 self.transition_over=False
-            if self.textNum >= 5 and self.dialogNum == 1:
+            if self.textNum >= 4 and self.dialogNum == 1:
                 print("dialog1 over")
                 self.textNum = 0
-                #self.dialogNum = 2
-
-
+                self.dialogNum = 2
+                self.gameMode = 0
+            """ if self.textNum >= 30 and self.dialogNum == 2:
+                print("dialog2 over")
+                self.textNum = 0
                 self.dialogNum = 0
                 self.gameMode = 0
-                self.is_level_end=True
+                self.is_level_end=True """
 
 
         elif self.gameMode==0:
@@ -205,7 +220,7 @@ class Level4(BaseLevel):
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
-                    config.current_state = GameState.LEVEL4
+                    config.current_state = GameState.LEVEL5
                     self.transition_end_over = False
 
             
@@ -259,10 +274,15 @@ class Level4(BaseLevel):
 
 
 
+        if self.is_level_end:
+            self.screen.blit(self.star,(350,850))
+
+        
 
 
         if self.gameMode==1:
             self.dialog(self.screen)
+
 
 
         x, y = pygame.mouse.get_pos()

@@ -211,3 +211,42 @@ def show_dialog_console(dialog_img, dialog_text, screen):
     return typewriter_console.is_complete
 
 
+
+
+
+
+
+def show_dialog_bug_set(dialog_img, dialog_text, bug_img, screen,pos):
+
+    DIALOG_BUG_RECT_SET = pos
+    DIALOG_BUG_TEXT_SET_OFFSET = (50, 60)     # 相对于对话框的偏移量
+    DIALOG_BUG_CHA_SET_OFFSET = (600, -30) 
+
+    # 获取对话框尺寸
+    dialog_width = dialog_img.get_width()
+    font = pygame.font.Font("_Bugv1.0/assets/font/Deng.ttf", 22)
+    
+    # 如果传入新文本，重置打字机效果
+    if typewriter_bug.full_text != dialog_text:
+        typewriter_bug.set_text(dialog_text, font, dialog_width - 100)
+    
+    # 更新打字机效果
+    typewriter_bug.update()
+    
+    # 绘制对话框
+    screen.blit(dialog_img, DIALOG_BUG_RECT_SET)
+
+    # 绘制Bug立绘
+    bug_pos = (DIALOG_BUG_RECT_SET[0] + DIALOG_BUG_CHA_SET_OFFSET[0],
+               DIALOG_BUG_RECT_SET[1] + DIALOG_BUG_CHA_SET_OFFSET[1])
+    screen.blit(bug_img, bug_pos)
+
+    # 计算文本起始位置
+    text_pos = (DIALOG_BUG_RECT_SET[0] + DIALOG_BUG_TEXT_SET_OFFSET[0],
+                DIALOG_BUG_RECT_SET[1] + DIALOG_BUG_TEXT_SET_OFFSET[1])
+    
+    # 绘制文本
+    typewriter_bug.draw(screen, font, text_pos, 1)
+    
+    return typewriter_bug.is_complete
+
