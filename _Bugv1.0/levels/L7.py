@@ -1,9 +1,8 @@
-#关卡3
 #目标：打开网络连接
 #模板已完成（道具还没做
 
 import pygame
-from Papp_window import AppIcon,StateBox,TemperatureBall
+from Papp_window import AppIcon,StateBox,TemperatureBall,PasswordWindow
 from PRightClickMenu import ContextMenu
 from .level_base import BaseLevel
 import PDialog
@@ -68,6 +67,7 @@ class Level7(BaseLevel):
         self.statebox=StateBox()  #创建状态栏控制实例
         self.tball=TemperatureBall() #创建温度球
         self.rightmenu=ContextMenu(self.screen,0) #创建右键菜单栏
+        self.password_window=PasswordWindow()
 
         self.font_small=res_mgr.load_font("small", size=20)
 
@@ -75,6 +75,19 @@ class Level7(BaseLevel):
 
         self.right_menu_returnval=None
         self.right_menu_state=4 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧
+
+        self.tball_pos=(1200,300)###
+        self.tball_ismoving=False###
+
+        self.paste_area = pygame.Rect(500, 150, 780, 650)  
+
+        self.is_password_win_display=False
+        self.is_password_get=False
+
+        self.is_dialog3_try=False####try
+        self.is_dialog2_try=False
+
+
 
 
 
@@ -98,23 +111,51 @@ class Level7(BaseLevel):
         if self.dialogNum==1:  # 开场对话
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
-                PDialog.show_dialog_bug(self.dialogBug,"早上好啊Player！！！(>▽<",self.bug_shy,screen)  
+                PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_shy,screen)  
             elif self.textNum==2:
-                PDialog.show_dialog_player(self.dialogPlayer, "为什么这么高兴？？", screen)
+                PDialog.show_dialog_player(self.dialogPlayer, "111", screen)
             elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"因为我发现了一个——惊天的——大秘密！密码绝对是可以找到的！",self.bug_happy,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_happy,screen)
+
+        if self.dialogNum==2:   #   
+            if self.textNum==1:
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_shy,screen)  
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "222", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_happy,screen)
+
+        if self.dialogNum==3:   #   
+            if self.textNum==1:
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_shy,screen)  
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "333", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)                
                 
-                
+
+        if self.dialogNum==4:   #完成解谜     
+            if self.textNum==1:
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_shy,screen)  
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "444", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_happy,screen)
+
+
 
 
 
     def handle_mouse_button_down(self, event):
 
-        self.rightmenu.kkk()
+        print(self.gameMode,self.dialogNum)
 
         if self.gameMode == 1:      
             if event.button == 1:
-                if self.dialogNum in [1,2]:
+                if self.dialogNum in [1,2,3,4]:
                     self.textNum += 1
 
 
@@ -125,6 +166,7 @@ class Level7(BaseLevel):
 
 
             if event.button == 1:
+                
                 id= self.appicon.is_clicked((x, y))
 
                 if id is not None:
@@ -147,9 +189,7 @@ class Level7(BaseLevel):
                         self.effectChangeLevel.play()
                         print("准备切换到下一关")
 
-
-
-
+                    
                 if self.rightmenu.handle_left_click((x,y),self.right_menu_state):
                     self.right_menu_returnval=self.rightmenu.get_return_value()
                     if self.right_menu_returnval==0:
@@ -159,29 +199,57 @@ class Level7(BaseLevel):
                     elif self.right_menu_returnval==5:
                         print("当前关卡禁用复制粘贴")
 
+                if not self.tball_ismoving:
+                    self.tball_ismoving=self.tball.is_clicked((x,y))###
 
-                
+
+                """ if self.gameMode==0 and self.appicon.current_folder==13 and self.dialogNum==2 and not self.is_dialog2_try:#########
+                    self.gameMode=1
+                    self.is_dialog2_try=True
+                if self.gameMode==0 and self.is_dragon_img_display and self.dialogNum==3 and not self.is_dialog3_try:#########
+                    self.gameMode=1
+                    #self.is_password_win_display=True
+                    self.is_dialog3_try=True
+
+                if self.gameMode==0 and self.is_password_get and self.dialogNum==4:#########
+                    self.gameMode=1 """
+
+
+            if event.button==2:
+                x,y=event.pos
+                if self.tball_ismoving:###
+                    if x in range(200, 1280) and y in range(0,800):
+                        self.tball_ismoving=False
+                    self.tball_pos=(x,y)       
 
 
             if event.button==3:
+                x, y = event.pos
+
+
                 self.rightmenu.show_menu((x,y),self.right_menu_state)
+                
 
             
-                
+    def handle_mouse_motion(self, event):
+        if self.tball_ismoving:
+            self.tball_pos = event.pos                
 
 
 
     def handle_keydown(self, event):
+        self.password_window.keydown(event)
+        self.is_password_get=self.password_window.check_password(7)###############
         if event.key == pygame.K_DOWN:
             if self.gameMode==1:
                 self.gameMode = 0
             elif self.gameMode==0:
                 self.gameMode==1
-        if event.key == pygame.K_LEFT:#测试
-            self.finding_dialog_con=self.finding_dialog_con+1
         if event.key==pygame.K_r:
             self.appicon.reset()
             print("reset!!!")
+
+        
 
 
 
@@ -189,27 +257,55 @@ class Level7(BaseLevel):
 
     def update(self):
         super().update()
-        
+
+        """ if self.textNum==2 and self.dialogNum==3 and self.gameMode==1:#密码框出现
+            self.is_password_win_display=True
+
+
+        if self.dialogNum==4 and self.gameMode==1:#密码本
+
+            if self.textNum==2:
+                self.is_password_win_display=False
+                self.appicon.reset()
+                self.appicon.current_folder=5 """
+
+
+
         self.transition_over=self.transition.update()
         if self.isopen and not self.transition.is_active():
                 self.transition.start(duration=500)
 
-
-        if self.gameMode==1:
-            if self.transition_over:
+        if self.transition_over:
                 self.isopen=False
                 self.transition_over=False
+
+
+        if self.gameMode==1:
+            
             if self.textNum >= 4 and self.dialogNum == 1:
                 print("dialog1 over")
                 self.textNum = 0
                 self.dialogNum = 2
                 self.gameMode = 0
-            """ if self.textNum >= 30 and self.dialogNum == 2:
+                self.right_menu_state=0
+            if self.textNum >= 4 and self.dialogNum == 2:
                 print("dialog2 over")
+                self.textNum = 0
+                self.dialogNum = 3
+                self.gameMode = 0
+                self.right_menu_state=5
+            if self.textNum >= 4 and self.dialogNum == 3:
+                print("dialog3 over")
+                self.textNum = 0
+                self.dialogNum = 4
+                self.gameMode = 0
+            if self.textNum >= 4 and self.dialogNum == 4:
+                print("dialog4 over")
                 self.textNum = 0
                 self.dialogNum = 0
                 self.gameMode = 0
-                self.is_level_end=True """
+                self.is_level_end=True
+
 
 
         elif self.gameMode==0:
@@ -220,7 +316,7 @@ class Level7(BaseLevel):
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
-                    config.current_state = GameState.LEVEL8
+                    config.current_state = GameState.LEVEL7
                     self.transition_end_over = False
 
             
@@ -236,23 +332,13 @@ class Level7(BaseLevel):
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
 
-        
-
-
-
-
-
-
-
-        self.appicon.draw_icon(self.screen,5)  # 绘制应用图标
-        self.appicon.draw_window(self.screen,0)
-
-
-
-
+        self.appicon.draw_icon(self.screen,15)  # 绘制应用图标
+        self.appicon.draw_window(self.screen)
 
 
         self.statebox.draw_state_box(self.screen,True,False)
+        date_text = self.font.render("Day 6", True, (255, 255, 255))
+        self.screen.blit(date_text,(1380,910))
 
         if self.is_clicked_state:
             self.statebox.draw_state_window(self.screen)
@@ -262,22 +348,17 @@ class Level7(BaseLevel):
             self.statebox.draw_start_window(self.screen)
 
 
+        if self.is_password_win_display:
+            self.password_window.draw(self.screen,(850,400),self.is_password_get)
 
-
-        self.tball.draw(self.screen,False)
-
-
+        
         self.rightmenu.draw(self.screen)
 
-
-
-
+        self.tball.draw(self.screen,False,self.tball_pos)
 
 
         if self.is_level_end:
             self.screen.blit(self.star,(350,850))
-
-        
 
 
         if self.gameMode==1:
@@ -300,4 +381,3 @@ class Level7(BaseLevel):
 
 
         self.screen.blit(self.screen_black, (0, 0)) #暗角
-

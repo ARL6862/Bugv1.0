@@ -72,6 +72,8 @@ def preload_resources():
     res_mgr.load_image("dialog_bug", "_Bugv1.0/assets/else/IMG_DIA_BUG.png", (660, 260))#bug对话框
     res_mgr.load_image("dialog_player", "_Bugv1.0/assets/else/IMG_DIA_PLAYER.png", (973, 240))#player对话框
     res_mgr.load_image("dialog_cmd", "_Bugv1.0/assets/window/IMG_WIN_CMD.png", (550, 350))#cmd对话框
+    res_mgr.load_image("dialog_cmd_s", "_Bugv1.0/assets/window/IMG_WIN_CMD_S.png", (275, 175))#cmd对话框 小
+    #res_mgr.load_image("dialog_cmd_s_2", "_Bugv1.0/assets/window/IMG_WIN_CMD_S_2.png", (275, 175))#cmd对话框 小 正确
 
     res_mgr.load_image("control_online", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE.png", (1280, 73))#控制栏 联网 ！
     res_mgr.load_image("control_online_end", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE_END.png", (1280, 73))#控制栏 联网成功
@@ -85,9 +87,17 @@ def preload_resources():
     res_mgr.load_image("button_ok", "_Bugv1.0/assets/else/IMG_BUTTON_OK.png", (130, 80))#确认按钮，L1
     res_mgr.load_image("inputbox", "_Bugv1.0/assets/else/IMG_INPUTBOX.png", (500, 80))#输入框，L1
 
-    res_mgr.load_image("Fball_60", "_Bugv1.0/assets/else/IMG_FBALL_60.png", (200, 200))#温度球60
-    res_mgr.load_image("Fball_120", "_Bugv1.0/assets/else/IMG_FBALL_120.png", (200, 200))#温度球120
+    res_mgr.load_image("Fball_60", "_Bugv1.0/assets/else/IMG_FBALL_60.png", (200, 116))#温度球60
+    res_mgr.load_image("Fball_120", "_Bugv1.0/assets/else/IMG_FBALL_120.png", (200, 116))#温度球120
     res_mgr.load_image("star", "_Bugv1.0/assets/else/IMG_STAR.png", (100, 100))#星星
+
+    res_mgr.load_image("dragon", "_Bugv1.0/assets/else/IMG_DRAGON.jpg", (400, 350))#龙图
+    res_mgr.load_image("dragonball", "_Bugv1.0/assets/item/IMG_ITEM_DRAGONBALL.png", (40, 40))#龙珠
+
+    res_mgr.load_image("niudun1", "_Bugv1.0/assets/else/IMG_NIUDUN_1.png", (650, 500))#牛顿1
+    res_mgr.load_image("niudun2", "_Bugv1.0/assets/else/IMG_NIUDUN_2.png", (650, 500))#牛顿2
+    res_mgr.load_image("niudun3", "_Bugv1.0/assets/else/IMG_NIUDUN_3.png", (650, 500))#牛顿3
+    res_mgr.load_image("apple", "_Bugv1.0/assets/item/IMG_ITEM_APPLE.png", (40, 40))#苹果
 
 
 
@@ -100,7 +110,7 @@ def preload_resources():
 
     #音乐音效
     res_mgr.load_sound("bgm_normal", "_Bugv1.0/assets/sound/bgm_Far.mp3")#正常道中bgm
-    res_mgr.load_sound("bgm_error", "_Bugv1.0/assets/sound/bgm_Kittycity.mp3")#真结局道中bgm
+    #res_mgr.load_sound("bgm_error", "_Bugv1.0/assets/sound/bgm_Kittycity.mp3")#真结局道中bgm
 
     res_mgr.load_sound("effect_dialog", "_Bugv1.0/assets/sound/effect_po.mp3")#对话音效
     res_mgr.load_sound("effect_wakeup", "_Bugv1.0/assets/sound/effect_wakeup.mp3")#开机音效
@@ -159,26 +169,18 @@ def main():
                         config.current_state = GameState.LEVEL2
                         music_manager.play_bgm("bgm_normal")
                     elif config.current_state == GameState.LEVEL2:
-                        #music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL3
-                        #music_manager.play_bgm("bgm_error")
                     elif config.current_state == GameState.LEVEL3:
-                        #music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL4
                     elif config.current_state == GameState.LEVEL4:
-                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL5
                     elif config.current_state == GameState.LEVEL5:
-                        #music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL6
                     elif config.current_state == GameState.LEVEL6:
-                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL7
                     elif config.current_state == GameState.LEVEL7:
-                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL8
                     elif config.current_state == GameState.LEVEL8:
-                       # music_manager.stop_bgm()
                         config.current_state = GameState.LEVEL1
 
                         

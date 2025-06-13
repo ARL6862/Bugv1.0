@@ -83,6 +83,9 @@ class Level2(BaseLevel):
         self.right_menu_returnval=None
         self.right_menu_state=4 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧
 
+        self.tball_pos=(1200,300)###
+        self.tball_ismoving=False###
+
 
     #文案全部放在这里，会巨长，其实可以用excel表格来管理啥的但我懒得搞
     def dialog(self,screen):
@@ -125,7 +128,7 @@ class Level2(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"如果出现了Bug（不是我，是程序猿没改完的bug！）可以按“R”键重置当前状态！不过有时无法操作，是因为目前你缺少一些权限。",self.bug_normal,screen)
             elif self.textNum==4:
-                PDialog.show_dialog_bug(self.dialogBug,"——这个是“道具”！或许会有特殊的用处。你可以用鼠标左键点击，将它拾起，再点击右键将它放下，或与其他物体进行交互。",self.bug_normal,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"——这个是“道具”！或许会有特殊的用处。你可以用鼠标左键点击，将它拾起；中键点击将它放下，或与其他物体进行交互。",self.bug_normal,screen)
             elif self.textNum==5:
                 PDialog.show_dialog_bug(self.dialogBug,"———这里是“状态栏”。在状态栏的右下角显示了一些信息，你可以左键单击此处，来对网络、音量等选项进行设置。",self.bug_normal,screen)
             elif self.textNum==6:
@@ -280,19 +283,22 @@ class Level2(BaseLevel):
                         print("准备切换到下一关")
 
 
-
+                if not self.tball_ismoving:
+                    self.tball_ismoving=self.tball.is_clicked((x,y))###
 
                 if self.rightmenu.handle_left_click((x,y),self.right_menu_state):
                     self.right_menu_returnval=self.rightmenu.get_return_value()
-                    #print("returnval ",self.right_menu_returnval)
                     if self.right_menu_returnval==0:
                         self.right_menu_state=1
-                        #print("return ",self.right_menu_returnval)
                     elif self.right_menu_returnval==1 or self.right_menu_returnval==None:
                         self.right_menu_state=0
-                        #print("return ",self.right_menu_returnval)
                     elif self.right_menu_returnval==5:
                         print("当前关卡禁用复制粘贴")
+
+                
+
+
+
 
                 
                 
@@ -303,6 +309,11 @@ class Level2(BaseLevel):
 
             if event.button==3:
                 x, y = event.pos
+                if self.tball_ismoving:
+                    self.right_menu_state=3
+                    if x in range(200, 1280) and y in range(0,800):
+                        self.tball_ismoving=False
+                    self.tball_pos=(x,y)
                 print(x,",",y)
                 self.rightmenu.show_menu((x,y),self.right_menu_state)
 
@@ -311,8 +322,9 @@ class Level2(BaseLevel):
 
 
 
-    def handle_mouse_motion(self, event):#不知道有啥用其实。
-        x, y = event.pos
+    def handle_mouse_motion(self, event):
+        if self.tball_ismoving:
+            self.tball_pos = event.pos
 
 
     def handle_keydown(self, event):
@@ -405,7 +417,7 @@ class Level2(BaseLevel):
 
 
         self.appicon.draw_icon(self.screen,4)  # 绘制应用图标
-        self.appicon.draw_window(self.screen,0)
+        self.appicon.draw_window(self.screen)
 
 
 
@@ -413,6 +425,8 @@ class Level2(BaseLevel):
 
 
         self.statebox.draw_state_box(self.screen,self.is_clicked_state_wifi,False)
+        date_text = self.font.render("Day 1", True, (255, 255, 255))
+        self.screen.blit(date_text,(1380,910))
 
         if self.is_clicked_state:
             if self.wifion_over:
@@ -426,11 +440,9 @@ class Level2(BaseLevel):
 
 
 
-
-        self.tball.draw(self.screen,False)
-
-
         self.rightmenu.draw(self.screen)
+
+        self.tball.draw(self.screen,False,self.tball_pos)###
 
 
         #1 4 5 6

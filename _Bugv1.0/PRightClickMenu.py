@@ -8,6 +8,8 @@
 #是的老师，我们喜欢把注释当qq空间
 
 
+#仍需要处理：右键操作的复制粘贴菜单与放置道具同时绘制
+
 import pygame
 from resource_manager import res_mgr
 
@@ -38,7 +40,7 @@ class ContextMenu:
             {'text': "复制", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'copy'},
             {'text': "粘贴", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'paste'},
             {'text': "无可粘贴选项", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'no_paste'},
-            {'text': "粘贴数达上限", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'paste_max'},
+            {'text': " ", 'rect': pygame.Rect(0, 0, 0, 0), 'action': 'item_click'},
             {'text': "当前无操作权限", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'cant'}
         ]
 
@@ -109,6 +111,7 @@ class ContextMenu:
 
             self.visible = False
             return True
+        self.visible = False
         return False
         
 
@@ -120,12 +123,14 @@ class ContextMenu:
         if not self.visible:
             return
         
+                # 获取当前选项
+        current_option = self.options[self.menu_state]
+        
         # 绘制菜单背景
+        #if not current_option ==3:
         pygame.draw.rect(self.screen, (240, 240, 240), self.rect)
         pygame.draw.rect(self.screen, (255, 192, 203), self.rect, 5)
         
-        # 获取当前选项
-        current_option = self.options[self.menu_state]
         
         # 设置文字颜色
         text_color = (0, 0, 0) if self.menu_state in [0, 1] else (255, 0, 0)

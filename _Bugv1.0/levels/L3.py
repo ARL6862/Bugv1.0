@@ -87,6 +87,9 @@ class Level3(BaseLevel):
 
         self.finding_dialog_con=0#这里屎山了。
 
+        self.tball_pos=(1200,300)###
+        self.tball_ismoving=False###
+
         
 
 
@@ -122,7 +125,7 @@ class Level3(BaseLevel):
             elif self.textNum==5:
                 PDialog.show_dialog_bug(self.dialogBug,"不是啦！密码其实就藏在电脑内！",self.bug_normal,screen)
             elif self.textNum==6:
-                PDialog.show_dialog_bug(self.dialogBug,"想知道我为什么能确定吗？来，你也试着找找看吧！",self.bug_happy,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"想知道我为什么能确定吗？来，你也试着找找看吧！找到线索后记得左键单击，为我指出来哦！",self.bug_happy,screen)
 
         if self.dialogNum==2:
             if self.textNum==1:
@@ -147,9 +150,9 @@ class Level3(BaseLevel):
             elif self.textNum==9:
                 PDialog.show_dialog_console(self.dialogConsole, "它可能是一个加密文件夹的最里层、一个图片和数独谜题，又或者一个小游戏......总之，每当新的一天到来，我就会放出一道新的谜题。", screen)
             elif self.textNum==10:
-                PDialog.show_dialog_console(self.dialogConsole, "如果你解开一个谜题，对应的密码段就会出现在这个记事本里。", screen)
+                PDialog.show_dialog_console(self.dialogConsole, "如果你解开一个谜题,获得一段密码，对应的密码段就会记录在这个记事本里。", screen)
             elif self.textNum==11:
-                PDialog.show_dialog_console(self.dialogConsole, "还记得这件事吗？我没有给你任何和网络相关的权限。或许，现在正有一位善良的朋友正在帮你......聪明的，或者愚笨的。", screen)
+                PDialog.show_dialog_console(self.dialogConsole, "还记得这件事吗？我没有给你任何和网络相关的权限。所以，现在正有一位善良的朋友正在帮你......聪明的，或者愚笨的。", screen)
             elif self.textNum==12:
                 PDialog.show_dialog_console(self.dialogConsole, "如果进展不够顺利的话，你会怎么做呢？", screen)
             elif self.textNum==13:
@@ -275,14 +278,29 @@ class Level3(BaseLevel):
 
                 #if self.is_level_end and self.is_clicked_start_sleep:
 
-                
+                if not self.tball_ismoving:
+                    self.tball_ismoving=self.tball.is_clicked((x,y))
+
+            if event.button==2:
+                x,y=event.pos
+                if self.tball_ismoving:###
+                    if x in range(200, 1280) and y in range(0,800):
+                        self.tball_ismoving=False
+                    self.tball_pos=(x,y)      
 
 
             if event.button==3:
+                x, y = event.pos
+                if self.tball_ismoving:###
+                    if x in range(200, 1280) and y in range(0,800):
+                        self.tball_ismoving=False
+                    self.tball_pos=(x,y)
                 self.rightmenu.show_menu((x,y),self.right_menu_state)
 
             
-                
+    def handle_mouse_motion(self, event):
+        if self.tball_ismoving:
+            self.tball_pos = event.pos                
 
 
 
@@ -361,7 +379,7 @@ class Level3(BaseLevel):
 
 
         self.appicon.draw_icon(self.screen,self.icon_num)  # 绘制应用图标
-        self.appicon.draw_window(self.screen,0)
+        self.appicon.draw_window(self.screen)
 
 
 
@@ -369,6 +387,9 @@ class Level3(BaseLevel):
 
 
         self.statebox.draw_state_box(self.screen,True,False)
+        date_text = self.font.render("Day 2", True, (255, 255, 255))
+        self.screen.blit(date_text,(1380,910))
+
 
         if self.is_clicked_state:
             self.statebox.draw_state_window(self.screen)
@@ -378,12 +399,9 @@ class Level3(BaseLevel):
             self.statebox.draw_start_window(self.screen)
 
 
-
-
-        self.tball.draw(self.screen,False)
-
-
         self.rightmenu.draw(self.screen)
+
+        self.tball.draw(self.screen,False,self.tball_pos)
 
 
 

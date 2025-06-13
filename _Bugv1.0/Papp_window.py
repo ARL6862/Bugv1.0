@@ -12,6 +12,7 @@ class AppIcon:
         self.current_folder = None  # 当前打开的文件夹ID
         self.font=res_mgr.load_font("small", size=20)
         self.font_username=res_mgr.load_font("username", size=40)
+        self.font_iconname=res_mgr.load_font_b("iconname", size=20)
 
         self.icon_data = [] #桌面所有图标
         self.window_data = []#桌面图标对应窗口 1级
@@ -27,6 +28,7 @@ class AppIcon:
 
         self.int_icon(res_mgr)
         self.int_window(res_mgr)
+        self.password_num=0
 
     def reset(self): #想着是防止bug卡死做的重置。。
         self.display_window = None
@@ -47,6 +49,8 @@ class AppIcon:
 
         self.int_icon(res_mgr)
         self.int_window(res_mgr)
+
+        
 
 
     def int_icon(self,res_mgr):
@@ -69,7 +73,7 @@ class AppIcon:
             
             # 我的文件夹内图标 (father指向所属文件夹)
             {"id": 6, "type": "folder", "image": "icon_s_1", "rect": (680, 300), 
-             "text": "好吃的！", "father": 3, "sons": []},
+             "text": "好吃的！", "father": 3, "sons": [14]},
             
             {"id": 7, "type": "folder", "image": "icon_s_1", "rect": (680, 360), 
              "text": "xxx", "father": 3, "sons": []},
@@ -87,7 +91,18 @@ class AppIcon:
              "text": "新建文件夹（2）", "father": 10, "sons": [12]},
 
              {"id": 12, "type": "folder", "image": "icon_s_5", "rect": (680, 300), 
-             "text": "回收站", "father": 11, "sons": []}
+             "text": "回收站", "father": 11, "sons": []},
+
+
+
+             {"id": 13, "type": "folder", "image": "icon_1", "rect": (400, 50), 
+             "text": "召唤神龙！", "father": None, "sons": []},
+
+             {"id": 14, "type": "item", "image": "apple", "rect": (680, 300), 
+             "text": "苹果", "father": 6, "sons": []},
+
+             {"id": 15, "type": "folder", "image": "icon_6", "rect": (400, 200), 
+             "text": "Bug想要更有挑战性的谜题", "father": None, "sons": []}
 
              
         ]
@@ -128,15 +143,35 @@ class AppIcon:
 
 
 
-    def draw_icon(self, screen,num):
-        for icon in self.icon_data :
-            if icon["id"]<=num:
-                screen.blit(icon["image"], icon["rect"])
-                icon_text = self.font.render(icon["text"], True, (255, 255, 255))
-                text_rect = icon_text.get_rect()
-                text_rect.centerx = icon["rect"].centerx
-                text_rect.top = icon["rect"].bottom + 5
-                screen.blit(icon_text, text_rect)
+    def draw_icon(self, screen,num):#这一块纯屎 之后改
+        if num<=5:
+            for icon in self.icon_data :
+                if icon["id"]<=num:
+                    screen.blit(icon["image"], icon["rect"])
+                    icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
+                    text_rect = icon_text.get_rect()
+                    text_rect.centerx = icon["rect"].centerx
+                    text_rect.top = icon["rect"].bottom + 5
+                    screen.blit(icon_text, text_rect)
+        elif num==13:#L4出现召唤神龙
+            for icon in self.icon_data :
+                if icon["id"]<=5 or icon["id"]==13:
+                    screen.blit(icon["image"], icon["rect"])
+                    icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
+                    text_rect = icon_text.get_rect()
+                    text_rect.centerx = icon["rect"].centerx
+                    text_rect.top = icon["rect"].bottom + 5
+                    screen.blit(icon_text, text_rect)
+
+        elif num==15:#L5出现牛顿  #会有13判定先于15的问题（当二者位置重合时）不改了暂时用保证图标不重复来避免
+            for icon in self.icon_data :
+                if icon["id"]<=5 or icon["id"]==15:
+                    screen.blit(icon["image"], icon["rect"])
+                    icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
+                    text_rect = icon_text.get_rect()
+                    text_rect.centerx = icon["rect"].centerx
+                    text_rect.top = icon["rect"].bottom + 5
+                    screen.blit(icon_text, text_rect)
 
 
     def draw_icon_myfold(self, screen):#我的文件夹中显示图标
@@ -174,6 +209,13 @@ class AppIcon:
                 icon_text = self.font.render(icon["text"], True, (0, 0, 0))
                 screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
 
+    def draw_icon_son5(self,screen):#“好吃的”文件夹
+        for icon in self.icon_data:
+            if icon["id"]==14:
+                screen.blit(icon["image"], icon["rect"])
+                icon_text = self.font.render(icon["text"], True, (0, 0, 0))
+                screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
+
 
 
 
@@ -199,6 +241,7 @@ class AppIcon:
                 if icon["type"] == "folder":
                     self.open_folder(icon["id"])
                 return icon["id"]
+                
         return None
     
 
@@ -275,7 +318,7 @@ class AppIcon:
 
 
 
-    def draw_window(self, screen,password_num):
+    def draw_window(self, screen):
         #print("now:",self.display_window, "current folder:", self.current_folder)
         #if self.display_window == 1:  # 文件夹窗口
         
@@ -284,39 +327,56 @@ class AppIcon:
             self.draw_window_1(screen)
             #self.draw_icon_s(screen)
 
-        elif self.current_folder == 2:  #设置
+        if self.current_folder == 2:  #设置
             self.draw_window_4(screen)
             username_text = self.font_username.render("IAfOeraweB", True, (100, 0, 80))
             screen.blit(username_text,(780,220))
             #self.draw_icon_son1(screen)
 
-        elif self.current_folder == 3:  #我的文件夹
+        if self.current_folder == 3:  #我的文件夹
             self.draw_window_1(screen)
             self.draw_icon_myfold(screen)
 
-        elif self.current_folder == 4:  #上锁文件夹
+        if self.current_folder == 4:  #上锁文件夹
             self.draw_window_1(screen)
             self.draw_icon_son1(screen)
 
-        elif self.current_folder  == 5:#密码本 
+        if self.current_folder  == 5:#密码本 
             self.draw_window_2(screen)
             password_text_title = self.font_username.render("IAfOeraweB password :", True, (80, 0, 50))
-            if password_num==0:
-                password_text = self.font_username.render("[] [] [] [] [] [] [] [] [] []", True, (140, 0, 80))
+            if self.password_num==0:
+                self.password_text = self.font_username.render("[] [] [] [] [] [] [] [] [] []", True, (140, 0, 80))
+            elif self.password_num==1:
+                self.password_text = self.font_username.render("[6] [] [] [] [] [] [] [] [] []", True, (140, 0, 80))
+            elif self.password_num==2:
+                self.password_text = self.font_username.render("[6] [7] [] [] [] [] [] [] [] []", True, (140, 0, 80))
             screen.blit(password_text_title,(730,200))
-            screen.blit(password_text,(680,300))
+            screen.blit(self.password_text,(680,300))
 
-        elif self.current_folder == 9:  #上锁文件夹-2
+        if self.current_folder==6:#好吃的
+            self.draw_window_1(screen)
+            self.draw_icon_son5(screen)
+
+
+        if self.current_folder == 9:  #上锁文件夹-2
             self.draw_window_1(screen)
             self.draw_icon_son2(screen)
         
-        elif self.current_folder == 10:  #上锁文件夹-3
+        if self.current_folder == 10:  #上锁文件夹-3
             self.draw_window_1(screen)
             self.draw_icon_son3(screen)
 
-        elif self.current_folder == 11:  #上锁文件夹-回收站
+        if self.current_folder == 11:  #上锁文件夹-回收站
             self.draw_window_1(screen)
             self.draw_icon_son4(screen)
+
+        if self.current_folder == 13:  #L4七龙珠
+            self.draw_window_1(screen)
+
+        if self.current_folder==15:#L5牛顿
+            self.draw_window_2(screen)
+
+
         
 
         #又是连点两次的bug。。#改掉了
@@ -444,10 +504,14 @@ class TemperatureBall:
         self.ball_60=res_mgr.get_image("Fball_60")
         self.ball_120=res_mgr.get_image("Fball_120")
         self.ball_pos=(1200,300)
-        self.ball_size=(200,200)
+        self.ball_size=(200,116)
         self.ball_rect = pygame.Rect(*self.ball_pos, *self.ball_size)
 
     def is_clicked(self,pos):
+        if self.ball_rect.collidepoint(pos):
+
+            return True
+
 
         return False
     
@@ -456,8 +520,51 @@ class TemperatureBall:
         self.ball_rect = pygame.Rect(*self.ball_pos, *self.ball_size)
 
 
-    def draw(self,screen,isTup=False):
-        if isTup:
-            screen.blit(self.ball_120,self.ball_pos)
+    def draw(self,screen,isTup=False,ball_pos=(1200,300)):
+        self.ball_pos=ball_pos
+        self.ball_rect=pygame.Rect(*self.ball_pos, *self.ball_size)
+        if isTup:#升温  
+            screen.blit(self.ball_120,ball_pos)
         else:
-            screen.blit(self.ball_60,self.ball_pos)
+            screen.blit(self.ball_60,ball_pos)
+
+
+
+
+
+
+class PasswordWindow:
+    def __init__(self):
+        self.font=res_mgr.load_font("wifiname", size=30)
+        self.passwordwin_img=res_mgr.get_image("dialog_cmd_s")
+        #self.passwordwin_img_2=res_mgr.get_image("dialog_cmd_s_2")
+        self.input_box = pygame.Rect(590, 650, 500, 80) ###
+        self.input_text = ''
+        
+
+    def draw(self,screen,pos=(800,300),is_True=False):
+        screen.blit(self.passwordwin_img,pos)
+        text_pos=(pos[0]+50,pos[1]+80)
+        text = self.font.render(self.input_text, True, (255, 255, 255))
+        screen.blit(text, text_pos)
+        if is_True:
+            text_pos_suc=(pos[0]+140,pos[1]+140)
+            text_suc = self.font.render("正确！", True, (255, 255, 255))
+            screen.blit(text_suc, text_pos_suc)
+        
+        
+
+
+    def keydown(self,event):
+        if event.key == pygame.K_BACKSPACE:
+            self.input_text = self.input_text[:-1]
+        else:
+            self.input_text += event.unicode  
+
+
+
+    def check_password(self,num):
+        if self.input_text == f"{num}":  
+            return True
+        else:
+            return False

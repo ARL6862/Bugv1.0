@@ -56,6 +56,12 @@ class ResourceManager:
             self._fonts[key] = pygame.font.Font(path, size) if path else pygame.font.SysFont(None, size)
         return self._fonts[key]
     
+    def load_font_b(self, key, path=None, size=36):#默认字体等线，找到合适的可以替
+        path="_Bugv1.0/assets/font/Dengb.ttf"
+        if key not in self._fonts:
+            self._fonts[key] = pygame.font.Font(path, size) if path else pygame.font.SysFont(None, size)
+        return self._fonts[key]
+    
 
 res_mgr = ResourceManager()
 
