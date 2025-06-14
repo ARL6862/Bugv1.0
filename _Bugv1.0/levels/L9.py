@@ -1,9 +1,7 @@
-#目标：
-#密码 6 7 1 2 （1 2 6）
+#目标：打开网络连接
+#模板已完成（道具还没做
 
 import pygame
-import random
-import math
 from Papp_window import AppIcon,StateBox,TemperatureBall,PasswordWindow
 from PRightClickMenu import ContextMenu
 from .level_base import BaseLevel
@@ -12,7 +10,7 @@ from PTransition import TransitionManager
 from config import GameState, config
 from resource_manager import music_manager
 
-class Level7(BaseLevel):
+class Level9(BaseLevel):
     def __init__(self, screen, res_mgr):
         super().__init__(screen, res_mgr)
         self.bg = res_mgr.get_image("bg_normal")
@@ -89,27 +87,6 @@ class Level7(BaseLevel):
         self.is_dialog3_try=False####try
         self.is_dialog2_try=False
 
-        self.egg = res_mgr.get_image("egg")
-        self.egg1 = res_mgr.get_image("egg_1")
-        self.egg2 = res_mgr.get_image("egg_2")
-        self.egg6 = res_mgr.get_image("egg_6")
-        self.kfcwin = res_mgr.get_image("kfcwin")
-
-        self.is_tball_put_start=False
-        self.is_tball_put_start_time=0
-
-        self.is_kfcwin_display_num=0
-
-        self.is_tball_put_end=False
-        self.is_egg_display=False
-
-        self.white_rect = pygame.Rect(650, 450, 200, 100)
-
-        self.kfcwin_positions = []
-
-        self.is_egg_boom=False
-
-
 
 
 
@@ -140,7 +117,7 @@ class Level7(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_happy,screen)
 
-        if self.dialogNum==2:   #  打开文件夹
+        if self.dialogNum==2:   #   
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_shy,screen)  
@@ -149,15 +126,24 @@ class Level7(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_happy,screen)
 
-        if self.dialogNum==3:   #   解谜完成
+        if self.dialogNum==3:   #   
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_shy,screen)  
             elif self.textNum==2:
                 PDialog.show_dialog_player(self.dialogPlayer, "333", screen)
             elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)
+                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)                
+                
 
+        if self.dialogNum==4:   #完成解谜     
+            if self.textNum==1:
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_shy,screen)  
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "444", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_happy,screen)
 
 
 
@@ -175,15 +161,11 @@ class Level7(BaseLevel):
 
 
         elif self.gameMode == 0:
-
-
             
             x, y = event.pos
 
 
             if event.button == 1:
-
-                
                 
                 id= self.appicon.is_clicked((x, y))
 
@@ -193,13 +175,6 @@ class Level7(BaseLevel):
                         self.appicon.selected_icon = None
                     else:
                         self.appicon.selected_icon = id 
-
-                if id==17 and not self.is_tball_put_end:
-                    
-                    self.gameMode=1
-
-
-
 
                 self.appicon.is_button_clicked((x,y))
                 self.is_clicked_state=self.statebox.is_clicked_state((x,y))
@@ -228,10 +203,19 @@ class Level7(BaseLevel):
                     self.tball_ismoving=self.tball.is_clicked((x,y))###
 
 
+                """ if self.gameMode==0 and self.appicon.current_folder==13 and self.dialogNum==2 and not self.is_dialog2_try:#########
+                    self.gameMode=1
+                    self.is_dialog2_try=True
+                if self.gameMode==0 and self.is_dragon_img_display and self.dialogNum==3 and not self.is_dialog3_try:#########
+                    self.gameMode=1
+                    #self.is_password_win_display=True
+                    self.is_dialog3_try=True
+
+                if self.gameMode==0 and self.is_password_get and self.dialogNum==4:#########
+                    self.gameMode=1 """
+
+
             if event.button==2:
-                if self.tball_ismoving and self.white_rect.collidepoint((x,y)) and not self.is_tball_put_end:
-                    self.is_tball_put_start=True
-                    self.is_tball_put_start_time=pygame.time.get_ticks()
                 x,y=event.pos
                 if self.tball_ismoving:###
                     if x in range(200, 1280) and y in range(0,800):
@@ -255,7 +239,7 @@ class Level7(BaseLevel):
 
     def handle_keydown(self, event):
         self.password_window.keydown(event)
-        self.is_password_get=self.password_window.check_password(126)###############
+        self.is_password_get=self.password_window.check_password(7)###############
         if event.key == pygame.K_DOWN:
             if self.gameMode==1:
                 self.gameMode = 0
@@ -274,50 +258,17 @@ class Level7(BaseLevel):
     def update(self):
         super().update()
 
-        if self.is_password_get:
-            self.is_password_win_display=False
-            self.appicon.reset()
-            self.appicon.current_folder=5
-            self.appicon.password_num=7
-
-        if self.is_egg_boom and self.dialogNum==3:
-            self.is_tball_put_end=True
-            self.gameMode=1
+        """ if self.textNum==2 and self.dialogNum==3 and self.gameMode==1:#密码框出现
             self.is_password_win_display=True
 
-        if self.is_tball_put_start and not self.kfcwin_positions:  # 仅生成一次
-            self.kfcwin_positions = [
-                (
-                    random.randint(100, 1400 ),
-                    random.randint(50, 600)
-                )
-                for _ in range(8)  # 生成八个位置
-            ]
 
-        print(self.gameMode,self.dialogNum)
+        if self.dialogNum==4 and self.gameMode==1:#密码本
 
-        if self.appicon.current_folder == 17 and self.is_tball_put_start:
-            self.tball_pos = (self.white_rect.x, self.white_rect.y)
-            current_time = pygame.time.get_ticks()
-            elapsed_time = current_time - self.is_tball_put_start_time
-    
-            if elapsed_time >= 7000:
-                self.is_egg_boom=True
-            elif elapsed_time >= 2000:  # 等待2秒后开始显示
-                # 计算应该显示的数量（每500ms增加一个，最多8个）
-                target_num = min(8, (elapsed_time - 2000) // 500 + 1)
-                if target_num > self.is_kfcwin_display_num:
-                    self.is_kfcwin_display_num = target_num
-                        
-            
+            if self.textNum==2:
+                self.is_password_win_display=False
+                self.appicon.reset()
+                self.appicon.current_folder=5 """
 
-        if self.appicon.current_folder==17:
-            self.is_egg_display=True
-
-
-
-        if self.is_password_get:
-            self.is_level_end=True
 
 
         self.transition_over=self.transition.update()
@@ -336,7 +287,7 @@ class Level7(BaseLevel):
                 self.textNum = 0
                 self.dialogNum = 2
                 self.gameMode = 0
-                self.right_menu_state=5
+                self.right_menu_state=0
             if self.textNum >= 4 and self.dialogNum == 2:
                 print("dialog2 over")
                 self.textNum = 0
@@ -348,6 +299,12 @@ class Level7(BaseLevel):
                 self.textNum = 0
                 self.dialogNum = 4
                 self.gameMode = 0
+            if self.textNum >= 4 and self.dialogNum == 4:
+                print("dialog4 over")
+                self.textNum = 0
+                self.dialogNum = 0
+                self.gameMode = 0
+                self.is_level_end=True
 
 
 
@@ -355,11 +312,11 @@ class Level7(BaseLevel):
             self.transition_end_over = self.transition_end.update()
             if self.is_level_end and self.is_clicked_start_sleep:
                 if not self.transition_end.is_active():
-                    self.transition_end.start(duration=2000,text="Day 6    --->    Day 7")
+                    self.transition_end.start(duration=2000,text="Day 8    --->    Day 9")
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
-                    config.current_state = GameState.LEVEL7
+                    config.current_state = GameState.LEVEL8
                     self.transition_end_over = False
 
             
@@ -375,48 +332,13 @@ class Level7(BaseLevel):
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
 
-        self.appicon.draw_icon(self.screen,17)  # 绘制应用图标
-
-        if self.is_kfcwin_display_num >= 1 and self.kfcwin_positions:
-            
-            for i in range(min(self.is_kfcwin_display_num, 8)): 
-                x, y = self.kfcwin_positions[i]
-                self.screen.blit(self.kfcwin, (x, y))
-
-
+        self.appicon.draw_icon(self.screen,15)  # 绘制应用图标
         self.appicon.draw_window(self.screen)
-
-        
-
-        if self.is_egg_display:
-            if self.is_egg_boom:
-                self.screen.blit(self.egg1,(650,300))
-                self.screen.blit(self.egg2,(780,300))
-                self.screen.blit(self.egg6,(910,300))
-
-            else:
-                self.screen.blit(self.egg,(650,300))
-                self.screen.blit(self.egg,(780,300))
-                self.screen.blit(self.egg,(910,300))
-
-            text = self.font.render("用温暖的东西将蛋孵化吧！", True, (100, 0, 80)) 
-            self.screen.blit(text, (900,670))
-            pygame.draw.rect(self.screen, (255, 255, 255), self.white_rect) 
-            pygame.draw.rect(self.screen, (100, 0, 80), self.white_rect,5) 
 
 
         self.statebox.draw_state_box(self.screen,True,False)
-        date_text = self.font.render("Day 6", True, (255, 255, 255))
+        date_text = self.font.render("Day 8", True, (255, 255, 255))
         self.screen.blit(date_text,(1380,910))
-
-        
-
-        """ if self.is_kfcwin_display_num>=1 and self.is_tball_put_start:
-            for _ in range(1, self.is_kfcwin_display_num+1): 
-                #...随机数生成写错位置了，效果很诡异，但意外地发现可以用这个做故障特效。。。牛逼吗
-                x = random.randint(300, 1000 - self.kfcwin.get_width())  
-                y = random.randint(50, 600 - self.kfcwin.get_height())   
-                self.screen.blit(self.kfcwin, (x, y))   """
 
         if self.is_clicked_state:
             self.statebox.draw_state_window(self.screen)
@@ -427,19 +349,12 @@ class Level7(BaseLevel):
 
 
         if self.is_password_win_display:
-            self.password_window.draw(self.screen,(1000,200),self.is_password_get)
+            self.password_window.draw(self.screen,(850,400),self.is_password_get)
 
         
         self.rightmenu.draw(self.screen)
 
-        if self.is_kfcwin_display_num>=8:
-            self.tball.draw(self.screen,True,self.tball_pos)
-        else:
-            self.tball.draw(self.screen,False,self.tball_pos)
-
-
-        if self.is_kfcwin_display_num >= 1 and self.kfcwin_positions and not self.is_tball_put_end:
-            PDialog.show_dialog_bug(self.dialogBug,"嗯？感觉有点不对劲............",self.bug_scared,self.screen)  
+        self.tball.draw(self.screen,False,self.tball_pos)
 
 
         if self.is_level_end:
@@ -461,7 +376,7 @@ class Level7(BaseLevel):
             self.transition_end.draw(0, 0, self.screen)
 
 
-        if config.current_state == GameState.LEVEL8:  # 防止过渡完成后原场景会闪现一下
+        if config.current_state == GameState.LEVEL1:  # 防止过渡完成后原场景会闪现一下
             self.screen.fill((0, 0, 0))
 
 

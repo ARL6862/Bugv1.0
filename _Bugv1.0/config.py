@@ -16,6 +16,7 @@ class GameState(Enum):
     LEVEL6 = 6
     LEVEL7 = 7
     LEVEL8 = 8
+    LEVEL9 = 9
 
 config = SimpleNamespace()
 config.current_state = GameState.MENU

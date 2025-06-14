@@ -95,14 +95,20 @@ class AppIcon:
 
 
 
-             {"id": 13, "type": "folder", "image": "icon_1", "rect": (400, 50), 
+             {"id": 13, "type": "folder", "image": "icon_1", "rect": (400, 200), #400 50预留给任务管理器
              "text": "召唤神龙！", "father": None, "sons": []},
 
              {"id": 14, "type": "item", "image": "apple", "rect": (680, 300), 
              "text": "苹果", "father": 6, "sons": []},
 
-             {"id": 15, "type": "folder", "image": "icon_6", "rect": (400, 200), 
-             "text": "Bug想要更有挑战性的谜题", "father": None, "sons": []}
+             {"id": 15, "type": "folder", "image": "icon_6", "rect": (400, 350), 
+             "text": "Bug想要更有挑战性的谜题", "father": None, "sons": []},
+
+             {"id": 16, "type": "icon", "image": "icon_7", "rect": (400, 500), 
+             "text": "不弱智也不无聊", "father": None, "sons": []},
+
+             {"id": 17, "type": "folder", "image": "icon_1", "rect": (400, 650), 
+             "text": "疯狂星期四", "father": None, "sons": []}
 
              
         ]
@@ -143,35 +149,30 @@ class AppIcon:
 
 
 
-    def draw_icon(self, screen,num):#这一块纯屎 之后改
-        if num<=5:
-            for icon in self.icon_data :
-                if icon["id"]<=num:
-                    screen.blit(icon["image"], icon["rect"])
-                    icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
-                    text_rect = icon_text.get_rect()
-                    text_rect.centerx = icon["rect"].centerx
-                    text_rect.top = icon["rect"].bottom + 5
-                    screen.blit(icon_text, text_rect)
-        elif num==13:#L4出现召唤神龙
-            for icon in self.icon_data :
-                if icon["id"]<=5 or icon["id"]==13:
-                    screen.blit(icon["image"], icon["rect"])
-                    icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
-                    text_rect = icon_text.get_rect()
-                    text_rect.centerx = icon["rect"].centerx
-                    text_rect.top = icon["rect"].bottom + 5
-                    screen.blit(icon_text, text_rect)
+    def draw_icon(self, screen, num):
+        
+        if num <= 5:
+            icon_ids = [id for id in range(1, num+1)]
+        elif num == 13:
+            icon_ids = [1, 2, 3, 4, 5, 13]
+        elif num == 15:
+            icon_ids = [1, 2, 3, 4, 5, 15]
+        elif num == 16:
+            icon_ids = [1, 2, 3, 4, 5, 16]
+        elif num == 17:
+            icon_ids = [1, 2, 3, 4, 5, 17]
+        else:
+            icon_ids = []
+        
 
-        elif num==15:#L5出现牛顿  #会有13判定先于15的问题（当二者位置重合时）不改了暂时用保证图标不重复来避免
-            for icon in self.icon_data :
-                if icon["id"]<=5 or icon["id"]==15:
-                    screen.blit(icon["image"], icon["rect"])
-                    icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
-                    text_rect = icon_text.get_rect()
-                    text_rect.centerx = icon["rect"].centerx
-                    text_rect.top = icon["rect"].bottom + 5
-                    screen.blit(icon_text, text_rect)
+        for icon in self.icon_data:
+            if icon["id"] in icon_ids:
+                screen.blit(icon["image"], icon["rect"])
+                icon_text = self.font_iconname.render(icon["text"], True, (100, 0, 80))
+                text_rect = icon_text.get_rect()
+                text_rect.centerx = icon["rect"].centerx
+                text_rect.top = icon["rect"].bottom + 5
+                screen.blit(icon_text, text_rect)
 
 
     def draw_icon_myfold(self, screen):#我的文件夹中显示图标
@@ -350,6 +351,12 @@ class AppIcon:
                 self.password_text = self.font_username.render("[6] [] [] [] [] [] [] [] [] []", True, (140, 0, 80))
             elif self.password_num==2:
                 self.password_text = self.font_username.render("[6] [7] [] [] [] [] [] [] [] []", True, (140, 0, 80))
+            elif self.password_num==4:
+                self.password_text = self.font_username.render("[6] [7] [1] [2] [] [] [] [] [] []", True, (140, 0, 80))
+            elif self.password_num==7:
+                self.password_text = self.font_username.render("[6] [7] [1] [2] [1] [2] [6] [] [] []", True, (140, 0, 80))
+            elif self.password_num==8:
+                self.password_text = self.font_username.render("[6] [7] [1] [2] [1] [2] [6] [4] [] []", True, (140, 0, 80))
             screen.blit(password_text_title,(730,200))
             screen.blit(self.password_text,(680,300))
 
@@ -375,6 +382,9 @@ class AppIcon:
 
         if self.current_folder==15:#L5牛顿
             self.draw_window_2(screen)
+
+        if self.current_folder==17:#L7
+            self.draw_window_1(screen)
 
 
         

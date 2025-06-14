@@ -46,7 +46,7 @@ class Level6(BaseLevel):
         #对话控制相关参数
         self.textNum=0
         self.dialogNum=1
-        self.gameMode = 1   #0=normal;1=dialog;2=catch_game
+        self.gameMode = 0   #0=normal;1=dialog;2=catch_game
         self.last_played_textNum = -1
 
         self.transition = TransitionManager(1680, 960)
@@ -193,7 +193,7 @@ class Level6(BaseLevel):
             self.screen.blit(over_text, (self.game_area_left + self.game_area_width//2 - 180, 
                                       self.game_area_top + self.game_area_height//2))
         elif self.catch_game_won:
-            win_text = self.game_font.render(f"胜利! 连击数：12！按ESC退出游戏", True, (255, 255, 255))
+            win_text = self.game_font.render(f"胜利! 连击数：12！", True, (230, 230, 230))
             self.screen.blit(win_text, (self.game_area_left + self.game_area_width//2 - win_text.get_width()//2, 
                                       self.game_area_top + self.game_area_height//2 - 20))
 
@@ -206,7 +206,7 @@ class Level6(BaseLevel):
                 self.effectDialog.play()
             self.last_played_textNum = self.textNum
 
-        if self.dialogNum==1:
+        if self.dialogNum==1:#接球完成
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_shy,screen)  
@@ -215,37 +215,18 @@ class Level6(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_happy,screen)
 
-        if self.dialogNum==2:
-            if self.textNum==1:
-                music_manager.play_bgm("bgm_normal")
-                PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_shy,screen)  
-            elif self.textNum==2:
-                PDialog.show_dialog_player(self.dialogPlayer, "222", screen)
-            elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_happy,screen)
 
-        if self.dialogNum==3:
-            if self.textNum==1:
-                music_manager.play_bgm("bgm_normal")
-                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_shy,screen)  
-            elif self.textNum==2:
-                PDialog.show_dialog_player(self.dialogPlayer, "333", screen)
-            elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)                
-                
-        if self.dialogNum==4:
-            if self.textNum==1:
-                music_manager.play_bgm("bgm_normal")
-                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_shy,screen)  
-            elif self.textNum==2:
-                PDialog.show_dialog_player(self.dialogPlayer, "444", screen)
-            elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_happy,screen)
 
 
 
 
     def handle_mouse_button_down(self, event):
+        if self.gameMode==2 and self.catch_game_won:
+            self.is_password_win_display=True
+            if self.is_password_get:
+                self.is_level_end=True
+                self.gameMode=1
+
         if self.gameMode == 1:      
             if event.button == 1:
                 if self.dialogNum in [1,2,3,4]:
@@ -263,6 +244,9 @@ class Level6(BaseLevel):
                         self.appicon.selected_icon = None
                     else:
                         self.appicon.selected_icon = id 
+
+                if id==16:
+                    self.gameMode=2
 
                 self.appicon.is_button_clicked((x,y))
                 self.is_clicked_state=self.statebox.is_clicked_state((x,y))
@@ -309,18 +293,19 @@ class Level6(BaseLevel):
 
     def handle_keydown(self, event):
         self.password_window.keydown(event)
-        self.is_password_get=self.password_window.check_password(7)
+        self.is_password_get=self.password_window.check_password(12)
         
         # 接球游戏按键处理
         if self.gameMode == 2:
             if event.key == pygame.K_r and self.catch_game_over:
                 self.reset_catch_game()
                 self.paddle_width += 150
-            elif event.key == pygame.K_p and not self.catch_game_won and not self.catch_game_over:
+            elif event.key == pygame.K_p and not self.catch_game_won:
                 self.catch_score = 12
                 self.catch_game_won = True
-            elif event.key == pygame.K_ESCAPE and self.catch_game_won:
-                self.gameMode = 0
+                
+            #elif event.key == pygame.K_ESCAPE and self.catch_game_won:
+                #self.gameMode = 0
         
         if event.key == pygame.K_DOWN:
             if self.gameMode == 1:
@@ -357,24 +342,9 @@ class Level6(BaseLevel):
                 self.textNum = 0
                 self.dialogNum = 2
                 self.gameMode = 0
-                self.right_menu_state=0
-            if self.textNum >= 4 and self.dialogNum == 2:
-                print("dialog2 over")
-                self.textNum = 0
-                self.dialogNum = 3
-                self.gameMode = 0
-                self.right_menu_state=5
-            if self.textNum >= 4 and self.dialogNum == 3:
-                print("dialog3 over")
-                self.textNum = 0
-                self.dialogNum = 4
-                self.gameMode = 0
-            if self.textNum >= 4 and self.dialogNum == 4:
-                print("dialog4 over")
-                self.textNum = 0
-                self.dialogNum = 0
-                self.gameMode = 0
+                self.right_menu_state=4
                 self.is_level_end=True
+
 
         elif self.gameMode==0:
             self.transition_end_over = self.transition_end.update()
@@ -393,7 +363,7 @@ class Level6(BaseLevel):
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
 
-        self.appicon.draw_icon(self.screen,15)
+        self.appicon.draw_icon(self.screen,16)
         self.appicon.draw_window(self.screen)
 
         self.statebox.draw_state_box(self.screen,True,False)
@@ -418,8 +388,14 @@ class Level6(BaseLevel):
 
         if self.gameMode == 2:
             self.draw_catch_game()
-        elif self.gameMode==1:
+        
+        if self.is_password_win_display:
+            self.password_window.draw(self.screen,(850,400),self.is_password_get)
+        
+        if self.gameMode==1:
             self.dialog(self.screen)
+
+        
 
         x, y = pygame.mouse.get_pos()
         self.screen.blit(self.mouse, (x - 4, y - 4))

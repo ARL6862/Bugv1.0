@@ -117,7 +117,7 @@ class Level8(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_happy,screen)
 
-        if self.dialogNum==2:   #   
+        if self.dialogNum==2:   # 进入回收站  
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_shy,screen)  
@@ -126,7 +126,7 @@ class Level8(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_happy,screen)
 
-        if self.dialogNum==3:   #   
+        if self.dialogNum==3:   #  在回收站点击其他垃圾 
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_shy,screen)  
@@ -136,7 +136,7 @@ class Level8(BaseLevel):
                 PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)                
                 
 
-        if self.dialogNum==4:   #完成解谜     
+        if self.dialogNum==4:   #完成解谜   -可以有分支？  
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_shy,screen)  
@@ -203,16 +203,6 @@ class Level8(BaseLevel):
                     self.tball_ismoving=self.tball.is_clicked((x,y))###
 
 
-                """ if self.gameMode==0 and self.appicon.current_folder==13 and self.dialogNum==2 and not self.is_dialog2_try:#########
-                    self.gameMode=1
-                    self.is_dialog2_try=True
-                if self.gameMode==0 and self.is_dragon_img_display and self.dialogNum==3 and not self.is_dialog3_try:#########
-                    self.gameMode=1
-                    #self.is_password_win_display=True
-                    self.is_dialog3_try=True
-
-                if self.gameMode==0 and self.is_password_get and self.dialogNum==4:#########
-                    self.gameMode=1 """
 
 
             if event.button==2:
@@ -316,7 +306,7 @@ class Level8(BaseLevel):
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
-                    config.current_state = GameState.LEVEL7
+                    config.current_state = GameState.LEVEL9
                     self.transition_end_over = False
 
             
@@ -376,7 +366,7 @@ class Level8(BaseLevel):
             self.transition_end.draw(0, 0, self.screen)
 
 
-        if config.current_state == GameState.LEVEL1:  # 防止过渡完成后原场景会闪现一下
+        if config.current_state == GameState.LEVEL9:  # 防止过渡完成后原场景会闪现一下
             self.screen.fill((0, 0, 0))
 
 

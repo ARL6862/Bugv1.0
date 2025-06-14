@@ -17,6 +17,7 @@ from levels.L5 import Level5
 from levels.L6 import Level6 
 from levels.L7 import Level7
 from levels.L8 import Level8 
+from levels.L9 import Level9
 
 
 
@@ -99,6 +100,13 @@ def preload_resources():
     res_mgr.load_image("niudun3", "_Bugv1.0/assets/else/IMG_NIUDUN_3.png", (650, 500))#牛顿3
     res_mgr.load_image("apple", "_Bugv1.0/assets/item/IMG_ITEM_APPLE.png", (40, 40))#苹果
 
+    res_mgr.load_image("egg", "_Bugv1.0/assets/else/IMG_EGG.png", (80, 80))#鸡蛋
+    res_mgr.load_image("egg_1", "_Bugv1.0/assets/else/IMG_EGG_1.png", (100, 100))#煎蛋1
+    res_mgr.load_image("egg_2", "_Bugv1.0/assets/else/IMG_EGG_2.png", (100, 100))#煎蛋2
+    res_mgr.load_image("egg_6", "_Bugv1.0/assets/else/IMG_EGG_6.png", (100, 100))#煎蛋6
+    res_mgr.load_image("kfcwin", "_Bugv1.0/assets/else/IMG_KFCWIN.png", (500, 700))#kfc弹窗
+
+
 
 
 
@@ -144,7 +152,8 @@ def main():
         GameState.LEVEL5: Level5(screen, res_mgr),
         GameState.LEVEL6: Level6(screen, res_mgr),
         GameState.LEVEL7: Level7(screen, res_mgr),
-        GameState.LEVEL8: Level8(screen, res_mgr)
+        GameState.LEVEL8: Level8(screen, res_mgr),
+        GameState.LEVEL9: Level9(screen, res_mgr)
     }
 
 
@@ -181,6 +190,8 @@ def main():
                     elif config.current_state == GameState.LEVEL7:
                         config.current_state = GameState.LEVEL8
                     elif config.current_state == GameState.LEVEL8:
+                        config.current_state = GameState.LEVEL9
+                    elif config.current_state == GameState.LEVEL9:
                         config.current_state = GameState.LEVEL1
 
                         
