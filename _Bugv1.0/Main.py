@@ -18,6 +18,13 @@ from levels.L6 import Level6
 from levels.L7 import Level7
 from levels.L8 import Level8 
 from levels.L9 import Level9
+from levels.L10 import Level10
+from levels.L11 import Level11
+from levels.L12 import Level12
+from levels.L13 import Level13
+from levels.L14 import Level14
+from levels.L15 import Level15
+
 
 
 
@@ -26,6 +33,7 @@ def preload_resources():
     res_mgr.load_image("bg_L1", "_Bugv1.0/assets/background/IMG_BG_1.png", (1280, 960))#关卡1开机背景
     res_mgr.load_image("bg_L1_2", "_Bugv1.0/assets/background/IMG_BG_1_2.png", (1280, 960))#关卡1开机背景-欢迎
     res_mgr.load_image("bg_normal", "_Bugv1.0/assets/background/IMG_BG_2.png", (1280, 960))#正常背景
+    res_mgr.load_image("bg_L7", "_Bugv1.0/assets/background/IMG_BG_3.png", (1280, 960))#关卡1开机背景-欢迎
 
     res_mgr.load_image("bgside_normal", "_Bugv1.0/assets/background/IMG_BGSIDE_1.jpg", (1680, 960))#正常底图
 
@@ -37,6 +45,8 @@ def preload_resources():
     res_mgr.load_image("icon_6", "_Bugv1.0/assets/icon/IMG_ICON_6.png", (100, 100))#图片
     res_mgr.load_image("icon_7", "_Bugv1.0/assets/icon/IMG_ICON_7.png", (100, 100))#球拍
     res_mgr.load_image("icon_8", "_Bugv1.0/assets/icon/IMG_ICON_8.png", (100, 100))#我的电脑
+    res_mgr.load_image("icon_10", "_Bugv1.0/assets/icon/IMG_ICON_10.png", (100, 100))#任务管理器
+
 
     res_mgr.load_image("icon_s_1", "_Bugv1.0/assets/icon/IMG_ICON_1.png", (40, 40))#文件夹 小
     res_mgr.load_image("icon_s_2", "_Bugv1.0/assets/icon/IMG_ICON_2.png", (40, 40))#上锁文件夹
@@ -46,12 +56,16 @@ def preload_resources():
     res_mgr.load_image("icon_s_6", "_Bugv1.0/assets/icon/IMG_ICON_6.png", (40, 40))#图片
     res_mgr.load_image("icon_s_7", "_Bugv1.0/assets/icon/IMG_ICON_7.png", (40, 40))#球拍
     res_mgr.load_image("icon_s_8", "_Bugv1.0/assets/icon/IMG_ICON_8.png", (40, 40))#我的电脑
+    res_mgr.load_image("icon_s_9", "_Bugv1.0/assets/icon/IMG_ICON_9.png", (40, 40))#压缩包
+    
 
     res_mgr.load_image("window_1", "_Bugv1.0/assets/window/IMG_WIN_1.png", (772, 640))#窗口 文件夹
     res_mgr.load_image("window_2", "_Bugv1.0/assets/window/IMG_WIN_2.png", (772, 640))#窗口 上锁文件夹 占位
     res_mgr.load_image("window_3", "_Bugv1.0/assets/window/IMG_WIN_3.png", (772, 640))#窗口 文本文档
     res_mgr.load_image("window_4", "_Bugv1.0/assets/window/IMG_WIN_4.png", (772, 640))#窗口 设置
     res_mgr.load_image("window_5", "_Bugv1.0/assets/window/IMG_WIN_5.png", (772, 640))#窗口 回收站 占位
+    res_mgr.load_image("window_6", "_Bugv1.0/assets/window/IMG_WIN_EXP.png", (772, 640))#任务管理器
+    res_mgr.load_image("window_7", "_Bugv1.0/assets/window/IMG_WIN_EXP_2.png", (772, 640))#任务管理器off
     res_mgr.load_image("window_state_on", "_Bugv1.0/assets/window/IMG_WIN_STATE_ON.png", (400, 400))#状态栏右侧 窗口 联网
     res_mgr.load_image("window_state_off", "_Bugv1.0/assets/window/IMG_WIN_STATE_OFF.png", (400, 400))#状态栏右侧 窗口 断网
     res_mgr.load_image("window_start_off", "_Bugv1.0/assets/window/IMG_WIN_START_OFF.png", (250, 80)) #开始 关机
@@ -74,7 +88,7 @@ def preload_resources():
     res_mgr.load_image("dialog_player", "_Bugv1.0/assets/else/IMG_DIA_PLAYER.png", (973, 240))#player对话框
     res_mgr.load_image("dialog_cmd", "_Bugv1.0/assets/window/IMG_WIN_CMD.png", (550, 350))#cmd对话框
     res_mgr.load_image("dialog_cmd_s", "_Bugv1.0/assets/window/IMG_WIN_CMD_S.png", (275, 175))#cmd对话框 小
-    #res_mgr.load_image("dialog_cmd_s_2", "_Bugv1.0/assets/window/IMG_WIN_CMD_S_2.png", (275, 175))#cmd对话框 小 正确
+ 
 
     res_mgr.load_image("control_online", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE.png", (1280, 73))#控制栏 联网 ！
     res_mgr.load_image("control_online_end", "_Bugv1.0/assets/else/IMG_CONTROL_ONLINE_END.png", (1280, 73))#控制栏 联网成功
@@ -106,6 +120,15 @@ def preload_resources():
     res_mgr.load_image("egg_6", "_Bugv1.0/assets/else/IMG_EGG_6.png", (100, 100))#煎蛋6
     res_mgr.load_image("kfcwin", "_Bugv1.0/assets/else/IMG_KFCWIN.png", (500, 700))#kfc弹窗
 
+    res_mgr.load_image("rat", "_Bugv1.0/assets/else/IMG_RAT.png", (150, 150))#老鼠
+    res_mgr.load_image("rat_small", "_Bugv1.0/assets/else/IMG_RAT.png", (80, 80))#老鼠small
+
+    res_mgr.load_image("error1_1", "_Bugv1.0/assets/window/IMG_WIN_ERROR1_1.png", (450, 250))#错误1
+    res_mgr.load_image("error1_2", "_Bugv1.0/assets/window/IMG_WIN_ERROR1_2.png", (450, 250))#错误2
+    res_mgr.load_image("error2_1", "_Bugv1.0/assets/window/IMG_WIN_ERROR2_1.png", (450, 250))#错误3
+    res_mgr.load_image("error2_2", "_Bugv1.0/assets/window/IMG_WIN_ERROR2_2.png", (450, 250))#错误4
+
+
 
 
 
@@ -122,6 +145,7 @@ def preload_resources():
 
     res_mgr.load_sound("effect_dialog", "_Bugv1.0/assets/sound/effect_po.mp3")#对话音效
     res_mgr.load_sound("effect_wakeup", "_Bugv1.0/assets/sound/effect_wakeup.mp3")#开机音效
+    res_mgr.load_sound("effect_wakeup_2", "_Bugv1.0/assets/sound/effect_wakeup_2.mp3")#开机音效2
     res_mgr.load_sound("effect_changelevel", "_Bugv1.0/assets/sound/effect_changelevel.mp3")#转场音效
     res_mgr.load_sound("effect_cmd", "_Bugv1.0/assets/sound/effect_cmd.mp3")#cmd音效
     res_mgr.load_sound("effect_cmdoff", "_Bugv1.0/assets/sound/effect_cmdoff.mp3")#cmd音效 关闭
@@ -153,7 +177,14 @@ def main():
         GameState.LEVEL6: Level6(screen, res_mgr),
         GameState.LEVEL7: Level7(screen, res_mgr),
         GameState.LEVEL8: Level8(screen, res_mgr),
-        GameState.LEVEL9: Level9(screen, res_mgr)
+        GameState.LEVEL9: Level9(screen, res_mgr),
+        GameState.LEVEL10: Level10(screen, res_mgr),
+        GameState.LEVEL11: Level11(screen, res_mgr),
+        GameState.LEVEL12: Level12(screen, res_mgr),
+        GameState.LEVEL13: Level13(screen, res_mgr),
+        GameState.LEVEL14: Level14(screen, res_mgr),
+        GameState.LEVEL15: Level15(screen, res_mgr)
+
     }
 
 
@@ -192,7 +223,19 @@ def main():
                     elif config.current_state == GameState.LEVEL8:
                         config.current_state = GameState.LEVEL9
                     elif config.current_state == GameState.LEVEL9:
-                        config.current_state = GameState.LEVEL1
+                        config.current_state = GameState.LEVEL10
+                    elif config.current_state == GameState.LEVEL10:
+                        config.current_state = GameState.LEVEL11
+                    elif config.current_state == GameState.LEVEL11:
+                        config.current_state = GameState.LEVEL12
+                    elif config.current_state == GameState.LEVEL12:
+                        config.current_state = GameState.LEVEL13
+                    elif config.current_state == GameState.LEVEL13:
+                        config.current_state = GameState.LEVEL14
+                    elif config.current_state == GameState.LEVEL14:
+                        config.current_state = GameState.LEVEL15
+                    elif config.current_state == GameState.LEVEL15:
+                        config.current_state = GameState.MENU
 
                         
             elif event.type == pygame.MOUSEBUTTONDOWN:

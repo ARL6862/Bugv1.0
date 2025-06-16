@@ -30,6 +30,8 @@ class AppIcon:
         self.int_window(res_mgr)
         self.password_num=0
 
+        self.is_exp_end=False
+
     def reset(self): #想着是防止bug卡死做的重置。。
         self.display_window = None
         self.selected_icon = None
@@ -91,7 +93,7 @@ class AppIcon:
              "text": "新建文件夹（2）", "father": 10, "sons": [12]},
 
              {"id": 12, "type": "folder", "image": "icon_s_5", "rect": (680, 300), 
-             "text": "回收站", "father": 11, "sons": []},
+             "text": "回收站", "father": 11, "sons": [18,19,20,21,22,23,24]},
 
 
 
@@ -108,7 +110,33 @@ class AppIcon:
              "text": "不弱智也不无聊", "father": None, "sons": []},
 
              {"id": 17, "type": "folder", "image": "icon_1", "rect": (400, 650), 
-             "text": "疯狂星期四", "father": None, "sons": []}
+             "text": "疯狂星期四", "father": None, "sons": []},
+
+
+
+             {"id": 18, "type": "folder", "image": "icon_s_3", "rect": (680, 300), 
+             "text": "1111111111111111", "father": 12, "sons": []},
+
+             {"id": 19, "type": "folder", "image": "icon_s_3", "rect": (680, 360), 
+             "text": "222222222222222", "father": 12, "sons": []},
+
+             {"id": 20, "type": "folder", "image": "icon_s_3", "rect": (680, 420), 
+             "text": "3333333333333", "father": 12, "sons": []},
+
+             {"id": 21, "type": "folder", "image": "icon_s_3", "rect": (680, 480), 
+             "text": "44444444444444", "father": 12, "sons": []},
+
+             {"id": 22, "type": "folder", "image": "icon_s_3", "rect": (680, 540), 
+             "text": "55555555555555", "father":12, "sons": []},
+
+             {"id": 23, "type": "folder", "image": "icon_s_6", "rect": (680, 600),
+             "text": "66666666666666", "father": 12, "sons": []},
+
+             {"id": 24, "type": "icon", "image": "rat_small", "rect": (680, 660), 
+             "text": "老鼠！老鼠！老鼠！", "father": 12, "sons": []},
+
+             {"id": 25, "type": "folder", "image": "icon_10", "rect": (400,50), 
+             "text": "任务管理器", "father": None, "sons": []}
 
              
         ]
@@ -127,7 +155,7 @@ class AppIcon:
 
     def load_window(self, res_mgr):
         #可以加一些不同关卡的处理逻辑
-        for i in range(1, 6):
+        for i in range(1, 8):
             image = res_mgr.get_image(f"window_{i}")
             rect = image.get_rect(topleft=(550, 150))
             self.window_data.append({"image": image, "rect": rect, "id": i})
@@ -152,17 +180,17 @@ class AppIcon:
     def draw_icon(self, screen, num):
         
         if num <= 5:
-            icon_ids = [id for id in range(1, num+1)]
+            icon_ids = [id for id in range(1, num+1) or id==25] 
         elif num == 13:
-            icon_ids = [1, 2, 3, 4, 5, 13]
+            icon_ids = [1, 2, 3, 4, 5, 13,25]
         elif num == 15:
-            icon_ids = [1, 2, 3, 4, 5, 15]
+            icon_ids = [1, 2, 3, 4, 5, 15,25]
         elif num == 16:
-            icon_ids = [1, 2, 3, 4, 5, 16]
+            icon_ids = [1, 2, 3, 4, 5, 16,25]
         elif num == 17:
-            icon_ids = [1, 2, 3, 4, 5, 17]
+            icon_ids = [1, 2, 3, 4, 5, 17,25]
         else:
-            icon_ids = []
+            icon_ids = [1,2,3,4,5,25]
         
 
         for icon in self.icon_data:
@@ -213,6 +241,18 @@ class AppIcon:
     def draw_icon_son5(self,screen):#“好吃的”文件夹
         for icon in self.icon_data:
             if icon["id"]==14:
+                screen.blit(icon["image"], icon["rect"])
+                icon_text = self.font.render(icon["text"], True, (0, 0, 0))
+                screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
+
+
+    def draw_icon_son6(self,screen,is_rat_delete=False):#回收站
+        if is_rat_delete:
+            num=23
+        else:
+            num=24
+        for icon in self.icon_data:
+            if 18 <= icon["id"] <= num:  
                 screen.blit(icon["image"], icon["rect"])
                 icon_text = self.font.render(icon["text"], True, (0, 0, 0))
                 screen.blit(icon_text, (icon["rect"].x+50,icon["rect"].y+10))
@@ -312,14 +352,20 @@ class AppIcon:
     def draw_window_4(self,screen):#设置
         screen.blit(self.window_data[3]["image"], self.window_data[3]["rect"])
 
-    def draw_window_5(self,screen):#占位-文本文档
+    def draw_window_5(self,screen):#
         screen.blit(self.window_data[4]["image"], self.window_data[4]["rect"])
 
+    def draw_window_6(self,screen):#任务管理器
+        screen.blit(self.window_data[5]["image"], self.window_data[5]["rect"])
+
+    def draw_window_7(self,screen):#任务管理器-off
+        screen.blit(self.window_data[6]["image"], self.window_data[6]["rect"])
 
 
 
 
-    def draw_window(self, screen):
+
+    def draw_window(self, screen,is_rat_delete=False,):
         #print("now:",self.display_window, "current folder:", self.current_folder)
         #if self.display_window == 1:  # 文件夹窗口
         
@@ -356,7 +402,7 @@ class AppIcon:
             elif self.password_num==7:
                 self.password_text = self.font_username.render("[6] [7] [1] [2] [1] [2] [6] [] [] []", True, (140, 0, 80))
             elif self.password_num==8:
-                self.password_text = self.font_username.render("[6] [7] [1] [2] [1] [2] [6] [4] [] []", True, (140, 0, 80))
+                self.password_text = self.font_username.render("[6] [7] [1] [2] [1] [2] [6] [4] [] []", True, (140, 0, 80))#L9
             screen.blit(password_text_title,(730,200))
             screen.blit(self.password_text,(680,300))
 
@@ -376,6 +422,11 @@ class AppIcon:
         if self.current_folder == 11:  #上锁文件夹-回收站
             self.draw_window_1(screen)
             self.draw_icon_son4(screen)
+            
+
+        if self.current_folder==12:#回收站
+            self.draw_window_1(screen)
+            self.draw_icon_son6(screen,is_rat_delete)
 
         if self.current_folder == 13:  #L4七龙珠
             self.draw_window_1(screen)
@@ -385,6 +436,34 @@ class AppIcon:
 
         if self.current_folder==17:#L7
             self.draw_window_1(screen)
+
+
+
+        if self.current_folder ==18:
+            self.draw_window_1(screen)
+
+        if self.current_folder ==19:
+            self.draw_window_1(screen)
+
+        if self.current_folder ==20:
+            self.draw_window_1(screen)
+
+        if self.current_folder ==21:
+            self.draw_window_1(screen)
+
+        if self.current_folder ==22:
+            self.draw_window_1(screen)
+
+        if self.current_folder ==23:
+            self.draw_window_1(screen)
+
+        if self.current_folder ==25:
+            if self.is_exp_end:
+                self.draw_window_7(screen)
+            else:
+                self.draw_window_6(screen)
+
+
 
 
         
@@ -477,6 +556,13 @@ class StateBox:
     
     def is_clicked_start_sleep(self,pos,is_level_end):
         if is_level_end and self.start_window_sleep_rect.collidepoint(pos) :
+            return True
+        return False
+    
+
+    
+    def is_clicked_start_off(self,pos,is_off=False):
+        if is_off and self.start_window_off_rect.collidepoint(pos) :
             return True
         return False
 

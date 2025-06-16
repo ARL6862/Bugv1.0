@@ -14,8 +14,11 @@ DIALOG_BUG_CHA_OFFSET = (600, -30)      # Bug立绘相对于对话框的偏移�
 DIALOG_CONSOLE_RECT = (350, 200)
 DIALOG_CONSOLE_TEXT_OFFSET = (50, 80)  # 相对于对话框的偏移量
 
+DIALOG_END_RECT = (200, 0)
+DIALOG_END_TEXT_OFFSET = (50, 50)  # 相对于对话框的偏移量
+
 class TypewriterText:
-    def __init__(self, char_delay=30):
+    def __init__(self, char_delay=20):
         self.full_text = ""          # 完整文本内容
         self.displayed_text = ""     # 当前显示的文本
         self.last_char_time = 0      # 上次添加字符的时间
@@ -122,6 +125,7 @@ class TypewriterText:
 typewriter_player = TypewriterText()
 typewriter_bug = TypewriterText()
 typewriter_console = TypewriterText()
+typewriter_end = TypewriterText()
 
 def show_dialog_player(dialog_img, dialog_text, screen):
 
@@ -211,7 +215,28 @@ def show_dialog_console(dialog_img, dialog_text, screen):
     return typewriter_console.is_complete
 
 
+def show_dialog_end( dialog_text, screen):
 
+    # 获取对话框尺寸
+    dialog_width = 1280
+    font = pygame.font.Font("_Bugv1.0/assets/font/Deng.ttf", 36)
+    
+    # 如果传入新文本，重置打字机效果
+    if typewriter_end.full_text != dialog_text:
+        typewriter_end.set_text(dialog_text, font, dialog_width - 100)
+    
+    # 更新打字机效果
+    typewriter_end.update()
+    
+
+    # 计算文本起始位置
+    text_pos = (DIALOG_END_RECT[0] + DIALOG_END_TEXT_OFFSET[0],
+                DIALOG_END_RECT[1] + DIALOG_END_TEXT_OFFSET[1])
+    
+    # 绘制文本
+    typewriter_end.draw(screen, font, text_pos, 0)
+    
+    return typewriter_end.is_complete
 
 
 

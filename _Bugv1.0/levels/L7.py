@@ -15,7 +15,7 @@ from resource_manager import music_manager
 class Level7(BaseLevel):
     def __init__(self, screen, res_mgr):
         super().__init__(screen, res_mgr)
-        self.bg = res_mgr.get_image("bg_normal")
+        self.bg = res_mgr.get_image("bg_L7")
         self.bgside = res_mgr.get_image("bgside_normal")
 
         self.bug_normal= res_mgr.get_image("bug_normal")
@@ -336,13 +336,13 @@ class Level7(BaseLevel):
                 self.textNum = 0
                 self.dialogNum = 2
                 self.gameMode = 0
-                self.right_menu_state=5
+
             if self.textNum >= 4 and self.dialogNum == 2:
                 print("dialog2 over")
                 self.textNum = 0
                 self.dialogNum = 3
                 self.gameMode = 0
-                self.right_menu_state=5
+
             if self.textNum >= 4 and self.dialogNum == 3:
                 print("dialog3 over")
                 self.textNum = 0
@@ -374,6 +374,8 @@ class Level7(BaseLevel):
  
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
+
+        self.screen.blit(self.kfcwin, (1000, 700))
 
         self.appicon.draw_icon(self.screen,17)  # 绘制应用图标
 

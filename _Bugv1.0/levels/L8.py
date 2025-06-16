@@ -8,7 +8,7 @@ from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
 from config import GameState, config
-from resource_manager import music_manager
+from resource_manager import music_manager,ending_manager
 
 class Level8(BaseLevel):
     def __init__(self, screen, res_mgr):
@@ -74,7 +74,7 @@ class Level8(BaseLevel):
         self.is_level_end=False #true可以点击睡眠
 
         self.right_menu_returnval=None
-        self.right_menu_state=4 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧
+        self.right_menu_state=0 #可复制粘贴设0，其他关卡正常设置4禁用，省点事吧  删除 2
 
         self.tball_pos=(1200,300)###
         self.tball_ismoving=False###
@@ -84,14 +84,56 @@ class Level8(BaseLevel):
         self.is_password_win_display=False
         self.is_password_get=False
 
-        self.is_dialog3_try=False####try
-        self.is_dialog2_try=False
+        self.rat=res_mgr.get_image("rat")
+        self.rat_small=res_mgr.get_image("rat_small")
+        self.current_rat=self.rat
+
+        self.rat_pos = (1200, 600)  # 初始位置
+        self.rat_moving = False  
+        self.rat_current_pos=(1200,600)
+        self.rat_display=True
+        self.rat_delete_rect=pygame.Rect(680, 660,300,50)
+        self.is_rat_delete=False
+
+        #self.zip=res_mgr.get_image("icon_s_9")
 
 
 
 
 
 
+    def start_rat_movement(self, start_pos, end_pos, duration):
+        
+        self.rat_moving = True
+        self.rat_start_pos = start_pos
+        self.rat_end_pos = end_pos
+        self.rat_move_duration = duration  
+        self.rat_move_start_time = pygame.time.get_ticks()
+        self.rat_current_pos = list(start_pos)
+        
+        # 计算总距离
+        self.rat_distance_x = end_pos[0] - start_pos[0]
+        self.rat_distance_y = end_pos[1] - start_pos[1]
+
+    def update_rat_movement(self):
+        
+        if not self.rat_moving:
+            return
+        
+        elapsed_ms = pygame.time.get_ticks() - self.rat_move_start_time
+        elapsed_seconds = elapsed_ms / 1000.0
+        
+        if elapsed_seconds < self.rat_move_duration:
+            # 计算移动进度（0到1之间）
+            progress = elapsed_seconds / self.rat_move_duration
+            
+            # 更新当前位置
+            self.rat_current_pos[0] = self.rat_start_pos[0] + self.rat_distance_x * progress
+            self.rat_current_pos[1] = self.rat_start_pos[1] + self.rat_distance_y * progress
+        else:
+            # 移动结束，确保位置精确到达终点
+            self.rat_current_pos[0], self.rat_current_pos[1] = self.rat_end_pos
+            self.rat_moving = False
         
 
 
@@ -126,24 +168,38 @@ class Level8(BaseLevel):
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_happy,screen)
 
-        if self.dialogNum==3:   #  在回收站点击其他垃圾 
+        if self.dialogNum==3:   #删除老鼠
             if self.textNum==1:
                 music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_shy,screen)  
             elif self.textNum==2:
                 PDialog.show_dialog_player(self.dialogPlayer, "333", screen)
             elif self.textNum==3:
-                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)                
+                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)  
+            elif self.textNum==4:
+                PDialog.show_dialog_player(self.dialogPlayer, "不过......为什么回收站会被藏在这种地方？真奇怪。", screen)              
                 
 
-        if self.dialogNum==4:   #完成解谜   -可以有分支？  
+        if self.dialogNum==4:   #点开其他文件
             if self.textNum==1:
-                music_manager.play_bgm("bgm_normal")
+                music_manager.stop_bgm()
                 PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_shy,screen)  
             elif self.textNum==2:
                 PDialog.show_dialog_player(self.dialogPlayer, "444", screen)
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_happy,screen)
+
+        if self.dialogNum==5:   #退回到桌面
+            if self.textNum==1:
+                PDialog.show_dialog_player(self.dialogPlayer, "Bug?老鼠已经被我捉起来了。", screen) 
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "......", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_player(self.dialogPlayer, "不在啊。可能被吓得躲起来了？", screen)
+            elif self.textNum==4:
+                PDialog.show_dialog_player(self.dialogPlayer, "看来今天是没办法去找新的密码了。", screen)
+            elif self.textNum==5 and ending_manager.is_True_end_get:
+                PDialog.show_dialog_player(self.dialogPlayer, "但......那些日记到底是什么？", screen)
 
 
 
@@ -151,25 +207,53 @@ class Level8(BaseLevel):
 
     def handle_mouse_button_down(self, event):
 
+        
+
         print(self.gameMode,self.dialogNum)
+        if self.rat_pos==(250, 500) and self.appicon.current_folder==None:
+            self.rat_display=False
+        
 
         if self.gameMode == 1:      
             if event.button == 1:
-                if self.dialogNum in [1,2,3,4]:
+                if self.dialogNum in [1,2,3,4,5]:
                     self.textNum += 1
+
+
+            if self.dialogNum==1 and self.textNum==1:
+                self.start_rat_movement(self.rat_pos, (1200, 200), 1.0)########
+            if self.dialogNum==1 and self.textNum==2:
+                self.start_rat_movement(self.rat_pos, (300, 50), 1.0)########
+            if self.dialogNum==1 and self.textNum==3:
+                self.start_rat_movement(self.rat_pos, (250, 500), 1.0)########
+                
 
 
 
         elif self.gameMode == 0:
             
             x, y = event.pos
+            
 
 
             if event.button == 1:
+                if self.appicon.current_folder==12 and self.dialogNum==2:
+                    self.rat_display=False
+                    self.gameMode=1
+                    self.right_menu_state=2
+
+                if self.is_rat_delete and self.appicon.current_folder==None and not self.is_level_end:
+                    self.is_password_get=True
+                    self.gameMode=1
+                    self.is_level_end=True
+                    if self.dialogNum==4:
+                        self.dialogNum=5
+                
                 
                 id= self.appicon.is_clicked((x, y))
 
                 if id is not None:
+                    self.rat_pos = (1100, 700)
                     if self.appicon.selected_icon :
                         self.appicon.display_window = id
                         self.appicon.selected_icon = None
@@ -179,6 +263,19 @@ class Level8(BaseLevel):
                 self.appicon.is_button_clicked((x,y))
                 self.is_clicked_state=self.statebox.is_clicked_state((x,y))
                 self.is_clicked_start=self.statebox.is_clicked_start((x,y))
+
+
+                if self.appicon.current_folder in {4, 9,10,11}:
+                    
+                    if not self.rat_pos == (680, 300):
+                        self.current_rat = self.rat_small
+                        self.start_rat_movement(self.rat_pos, (680, 300), 0.5)
+                        self.rat_display = True
+                    else:  
+                        self.rat_display = False
+
+                
+                
 
 
 
@@ -196,8 +293,16 @@ class Level8(BaseLevel):
                         self.right_menu_state=1
                     elif self.right_menu_returnval==1 or self.right_menu_returnval==None:
                         self.right_menu_state=0
-                    elif self.right_menu_returnval==5:
-                        print("当前关卡禁用复制粘贴")
+                    elif self.right_menu_returnval==2 and self.rat_delete_rect.collidepoint(x,y):
+                        ##########删除rat图标
+                        self.is_rat_delete=True
+                        self.right_menu_state=2
+                        self.gameMode=1
+
+                if self.appicon.current_folder in [18,19,20,21,22,23] and self.dialogNum==4:
+                    ending_manager.is_True_end_get=True
+                    self.gameMode=1
+
 
                 if not self.tball_ismoving:
                     self.tball_ismoving=self.tball.is_clicked((x,y))###
@@ -229,7 +334,7 @@ class Level8(BaseLevel):
 
     def handle_keydown(self, event):
         self.password_window.keydown(event)
-        self.is_password_get=self.password_window.check_password(7)###############
+        self.is_password_get=self.password_window.check_password(4)###############
         if event.key == pygame.K_DOWN:
             if self.gameMode==1:
                 self.gameMode = 0
@@ -239,6 +344,9 @@ class Level8(BaseLevel):
             self.appicon.reset()
             print("reset!!!")
 
+
+
+
         
 
 
@@ -247,6 +355,15 @@ class Level8(BaseLevel):
 
     def update(self):
         super().update()
+
+        
+
+        if self.appicon.current_folder==11:
+            self.rat_display=False
+
+        self.update_rat_movement()###########
+        self.rat_pos = tuple(self.rat_current_pos)######
+        
 
         """ if self.textNum==2 and self.dialogNum==3 and self.gameMode==1:#密码框出现
             self.is_password_win_display=True
@@ -277,24 +394,32 @@ class Level8(BaseLevel):
                 self.textNum = 0
                 self.dialogNum = 2
                 self.gameMode = 0
-                self.right_menu_state=0
+
             if self.textNum >= 4 and self.dialogNum == 2:
                 print("dialog2 over")
                 self.textNum = 0
                 self.dialogNum = 3
                 self.gameMode = 0
-                self.right_menu_state=5
+
             if self.textNum >= 4 and self.dialogNum == 3:
                 print("dialog3 over")
                 self.textNum = 0
                 self.dialogNum = 4
                 self.gameMode = 0
+                
             if self.textNum >= 4 and self.dialogNum == 4:
+                print("dialog4 over")
+                self.textNum = 0
+                self.dialogNum = 5
+                self.gameMode = 0
+                
+                
+            if self.textNum >= 6 and self.dialogNum == 5:
                 print("dialog4 over")
                 self.textNum = 0
                 self.dialogNum = 0
                 self.gameMode = 0
-                self.is_level_end=True
+                
 
 
 
@@ -322,8 +447,8 @@ class Level8(BaseLevel):
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
 
-        self.appicon.draw_icon(self.screen,15)  # 绘制应用图标
-        self.appicon.draw_window(self.screen)
+        self.appicon.draw_icon(self.screen,25)  # 绘制应用图标
+        self.appicon.draw_window(self.screen,self.is_rat_delete)
 
 
         self.statebox.draw_state_box(self.screen,True,False)
@@ -353,6 +478,9 @@ class Level8(BaseLevel):
 
         if self.gameMode==1:
             self.dialog(self.screen)
+
+        if self.rat_display:
+            self.screen.blit(self.current_rat, self.rat_pos)###########
 
 
 

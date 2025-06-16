@@ -1,11 +1,6 @@
-#
-#流程：报错弹窗-对话1-任务管理器结束错误进程-对话2+密码-更多报错弹窗-重启（关机）-分支###L9到这里
-    #分支1（未发现真相）：-开机界面输入Password-开机-对话3-联网-对话4-bad ending
-    #分支2（发现真相但未开启卸载程序）：-开机界面输入password-开机-对话5-分支   #-联网-对话4-bad ending
-                                                                           #-拒绝联网（等待1分钟以上或进行关机/睡眠操作）-对话6-bad ending
-    #分支3（发现真相且开启卸载程序）：-开机界面输入联网密码-开机-对话7+弹窗（卸载程序进度）-点击最终卸载确认-对话8 bug删除-桌面乱码（新增很多垃圾文件）-点击“实验日志”进入true ending
+#重启后 结局分支 假结局文本
 
-import random
+
 import pygame
 from Papp_window import AppIcon,StateBox,TemperatureBall,PasswordWindow
 from PRightClickMenu import ContextMenu
@@ -13,9 +8,9 @@ from .level_base import BaseLevel
 import PDialog
 from PTransition import TransitionManager
 from config import GameState, config
-from resource_manager import music_manager,ending_manager
+from resource_manager import music_manager
 
-class Level9(BaseLevel):
+class Level13(BaseLevel):
     def __init__(self, screen, res_mgr):
         super().__init__(screen, res_mgr)
         self.bg = res_mgr.get_image("bg_normal")
@@ -51,7 +46,6 @@ class Level9(BaseLevel):
         self.textNum=0#当前对话段的文本序号（例如①bug：111 ②Player：222 ③bug：333...）
         self.dialogNum=1#对话段序号（例如段①：游戏开始时；段②：新手教程时；段③：游戏结束时）
         self.gameMode = 1   #0=normal;1=dialog，用这个变量来控制当前是游戏模式or剧情模式（玩家不可进行鼠标点击推进对话外的操作，bug也不会乱跑）
-        #4 开机界面
         self.last_played_textNum = -1  # 记录上一次播放音效的文本编号，用来控制音效免得在循环中反复播放
 
 
@@ -85,7 +79,19 @@ class Level9(BaseLevel):
         self.tball_pos=(1200,300)###
         self.tball_ismoving=False###
 
+        self.dragonball = res_mgr.get_image("dragonball")
+        self.dragon = res_mgr.get_image("dragon")
+        self.dragonball_num=1
+        self.dragonball_paste_rect=pygame.Rect(680,300,40,40)
+        self.dragonball_nowpasting =False
+
         self.paste_area = pygame.Rect(500, 150, 780, 650)  
+
+        self.is_dragon_display=False
+        self.is_dragon_img_display=False
+        self.dragon_rect = pygame.Rect(680 , 390,40,40)
+
+        self.dragon_icon=res_mgr.get_image("icon_s_6")
 
         self.is_password_win_display=False
         self.is_password_get=False
@@ -93,25 +99,7 @@ class Level9(BaseLevel):
         self.is_dialog3_try=False####try
         self.is_dialog2_try=False
 
-        self.exp_end_rect=pygame.Rect(1165, 555,75,40)
-
-        self.error1_1 = res_mgr.get_image("error1_1")
-        self.error1_2 = res_mgr.get_image("error1_2")
-        self.error2_1 = res_mgr.get_image("error2_1")
-        self.error2_2 = res_mgr.get_image("error2_2")
-
-        self.is_error_display1=False
-        self.is_error_display2=False
-
-        self.error2_positions=[]
-        self.is_error2_start_time=0
-        self.is_error_display2_num = 0
-
-        self.is_off_start=False
-        self.is_clicked_start_off=False
-        self.is_open_scence=False
-
-
+        self.appicon.password_num=0
 
 
 
@@ -134,30 +122,42 @@ class Level9(BaseLevel):
 
 
         #对话控制
-        if self.dialogNum==1:  #1-1
+        if self.dialogNum==1:  # 开场对话
             if self.textNum==1:
-                #music_manager.play_bgm("bgm_normal")
+                music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_shy,screen)  
-            elif self.textNum==2:  #密码本暂定
+            elif self.textNum==2:
                 PDialog.show_dialog_player(self.dialogPlayer, "111", screen)
-            elif self.textNum==3:  #弹窗暂定
+            elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"111",self.bug_happy,screen)
-                self.is_error_display1=True
-            
 
-        if self.dialogNum==2:   #   1-2
+        if self.dialogNum==2:   #打开龙珠文件夹     
             if self.textNum==1:
-                #music_manager.play_bgm("bgm_normal")
+                music_manager.play_bgm("bgm_normal")
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_shy,screen)  
-                self.is_error_display2=True
-                self.is_off_start=True
-            elif self.textNum==2:#弹窗暂定
+            elif self.textNum==2:
                 PDialog.show_dialog_player(self.dialogPlayer, "222", screen)
-                
             elif self.textNum==3:
                 PDialog.show_dialog_bug(self.dialogBug,"222",self.bug_happy,screen)
 
-     
+        if self.dialogNum==3:   #点开神龙    
+            if self.textNum==1:
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_shy,screen)  
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "333", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"333",self.bug_happy,screen)                
+                
+
+        if self.dialogNum==4:   #完成解谜     
+            if self.textNum==1:
+                music_manager.play_bgm("bgm_normal")
+                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_shy,screen)  
+            elif self.textNum==2:
+                PDialog.show_dialog_player(self.dialogPlayer, "444", screen)
+            elif self.textNum==3:
+                PDialog.show_dialog_bug(self.dialogBug,"444",self.bug_happy,screen)
 
 
 
@@ -180,11 +180,6 @@ class Level9(BaseLevel):
 
 
             if event.button == 1:
-                if self.dialogNum==2 and self.appicon.current_folder==25 and self.exp_end_rect.collidepoint(x,y):
-                    self.appicon.is_exp_end=True
-                    self.gameMode=1
-                    self.is_error_display1=False
-
                 
                 id= self.appicon.is_clicked((x, y))
 
@@ -202,31 +197,41 @@ class Level9(BaseLevel):
 
 
                 if self.is_clicked_start:
-                    if self.is_clicked_start:
-                        # 先检测关机按钮
-                        self.is_clicked_start_off = self.statebox.is_clicked_start_off((x,y), self.is_off_start)
-                        if self.is_clicked_start_off:
-                            print("关机")
-                            # 不需要在这里处理过渡，统一在update中处理
-                            return
-                        
-                        # 再检测睡眠按钮
-                        self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
+                    self.is_clicked_start_sleep = self.statebox.is_clicked_start_sleep((x,y), self.is_level_end)
+                    if self.is_clicked_start_sleep:
+                        music_manager.stop_bgm()
+                        self.effectChangeLevel.play()
+                        print("准备切换到下一关")
+
+
+
+
+                if self.dragon_rect.collidepoint(x, y) and self.is_dragon_display and self.appicon.current_folder==13:
+                    self.is_dragon_img_display=True
+                elif not self.appicon.current_folder==13:
+                    self.is_dragon_img_display=False
                     
                 if self.rightmenu.handle_left_click((x,y),self.right_menu_state):
                     self.right_menu_returnval=self.rightmenu.get_return_value()
-                    if self.right_menu_returnval==0:
-                        self.right_menu_state=1
-                    elif self.right_menu_returnval==1 or self.right_menu_returnval==None:
-                        self.right_menu_state=0
-                    elif self.right_menu_returnval==5:
+                    
+                    # 点击复制按钮
+                    if self.right_menu_returnval == 0:  # 复制
+                        self.dragonball_nowpasting = True
+                        self.right_menu_state = 1  # 设置为粘贴状态
+                    # 点击粘贴按钮
+                    elif self.right_menu_returnval == 1:  # 粘贴
+                        if self.dragonball_num < 8:
+                            self.dragonball_num += 1
+                        self.dragonball_nowpasting = False
+                        self.right_menu_state = 0  # 重置为复制状态
+                    elif self.right_menu_returnval == 5:
                         print("当前关卡禁用复制粘贴")
 
                 if not self.tball_ismoving:
                     self.tball_ismoving=self.tball.is_clicked((x,y))###
 
 
-                """ if self.gameMode==0 and self.appicon.current_folder==13 and self.dialogNum==2 and not self.is_dialog2_try:#########
+                if self.gameMode==0 and self.appicon.current_folder==13 and self.dialogNum==2 and not self.is_dialog2_try:#########
                     self.gameMode=1
                     self.is_dialog2_try=True
                 if self.gameMode==0 and self.is_dragon_img_display and self.dialogNum==3 and not self.is_dialog3_try:#########
@@ -235,7 +240,8 @@ class Level9(BaseLevel):
                     self.is_dialog3_try=True
 
                 if self.gameMode==0 and self.is_password_get and self.dialogNum==4:#########
-                    self.gameMode=1 """
+                    self.gameMode=1
+                    self.appicon.password_num=1
 
 
             if event.button==2:
@@ -243,14 +249,29 @@ class Level9(BaseLevel):
                 if self.tball_ismoving:###
                     if x in range(200, 1280) and y in range(0,800):
                         self.tball_ismoving=False
-                    self.tball_pos=(x,y)       
+                    self.tball_pos=(x,y)   
 
 
             if event.button==3:
                 x, y = event.pos
 
-
-                self.rightmenu.show_menu((x,y),self.right_menu_state)
+                
+                # 如果龙珠数量已达上限，禁用操作
+                if self.dragonball_num >= 7:
+                    self.right_menu_state = 4  # 禁用状态
+                    self.right_menu_returnval = 5
+                # 未复制状态下点击龙珠区域 - 显示复制菜单
+                elif not self.dragonball_nowpasting and self.dragonball_paste_rect.collidepoint(x, y):
+                    self.right_menu_state = 0  # 复制菜单
+                # 已复制状态下在粘贴区域内点击 - 显示粘贴菜单
+                elif self.dragonball_nowpasting and self.paste_area.collidepoint(x, y):
+                    self.right_menu_state = 1  # 粘贴菜单
+                # 其他情况显示禁用菜单
+                else:                    
+                    self.right_menu_state = 4  # 禁用菜单
+                
+                # 显示菜单
+                self.rightmenu.show_menu((x, y), self.right_menu_state)
                 
 
             
@@ -262,12 +283,14 @@ class Level9(BaseLevel):
 
     def handle_keydown(self, event):
         self.password_window.keydown(event)
-        self.is_password_get=self.password_window.check_password(7)###############
+        self.is_password_get=self.password_window.check_password(6)
         if event.key == pygame.K_DOWN:
             if self.gameMode==1:
                 self.gameMode = 0
             elif self.gameMode==0:
                 self.gameMode==1
+        if event.key == pygame.K_LEFT:#测试
+            self.dragonball_num=self.dragonball_num+1
         if event.key==pygame.K_r:
             self.appicon.reset()
             print("reset!!!")
@@ -280,30 +303,11 @@ class Level9(BaseLevel):
 
     def update(self):
         super().update()
-
-        
-
-        if self.is_error_display2 and not self.error2_positions:  
-            self.is_error2_start_time=pygame.time.get_ticks()# 仅生成一次
-            self.error2_positions = [
-                (
-                    random.randint(100, 1400 ),
-                    random.randint(50, 600)
-                )
-                for _ in range(16) 
-            ]
-
-
-        if self.is_error_display2:
-            current_time = pygame.time.get_ticks()
-            elapsed_time = current_time - self.is_error2_start_time
-            target_num = min(16, (elapsed_time - 500) // 250 + 1)
-            if target_num > self.is_error_display2_num:
-                self.is_error_display2_num = target_num
-
-
-        """ if self.textNum==2 and self.dialogNum==3 and self.gameMode==1:#密码框出现
+        #if self.is_password_win_display and self.gameMode==0:
+        if self.textNum==2 and self.dialogNum==3 and self.gameMode==1:#密码框出现
             self.is_password_win_display=True
+
+        #if self.is_password_win_display and self.is_password_get:#正确！！
 
 
         if self.dialogNum==4 and self.gameMode==1:#密码本
@@ -311,21 +315,25 @@ class Level9(BaseLevel):
             if self.textNum==2:
                 self.is_password_win_display=False
                 self.appicon.reset()
-                self.appicon.current_folder=5 """
+                self.appicon.current_folder=5
 
 
 
+        if self.dragonball_num>=7:
+            self.is_dragon_display=True
+            #self.dialogNum=3
+        
         self.transition_over=self.transition.update()
         if self.isopen and not self.transition.is_active():
-                self.transition.start(duration=500)
-
-        if self.transition_over:
-                self.isopen=False
-                self.transition_over=False
+            self.transition.start(duration=500)
 
 
         if self.gameMode==1:
-            
+
+
+            if self.transition_over:
+                self.isopen=False
+                self.transition_over=False
             if self.textNum >= 4 and self.dialogNum == 1:
                 print("dialog1 over")
                 self.textNum = 0
@@ -354,28 +362,13 @@ class Level9(BaseLevel):
 
         elif self.gameMode==0:
             self.transition_end_over = self.transition_end.update()
-
-                        # 处理关机按钮的过渡
-            if self.is_clicked_start_off:  # 检查是否点击了关机按钮
-                if not self.transition_end.is_active():
-                    self.transition_end.start(duration=2000, text="正在重新启动...")  
-                    music_manager.stop_bgm()
-                    #self.effectChangeLevel.play()
-                
-                # 过渡完成后切换关卡（这里假设关机后进入LEVEL10）
-                if self.transition_end_over:
-                    config.current_state = GameState.LEVEL10
-                    self.transition_end_over = False
-
-
-
             if self.is_level_end and self.is_clicked_start_sleep:
                 if not self.transition_end.is_active():
-                    self.transition_end.start(duration=2000,text="Day 8    --->    Day 9")
+                    self.transition_end.start(duration=2000,text="")
 
                 # 过渡完成后切换关卡
                 if self.transition_end_over:
-                    config.current_state = GameState.LEVEL10
+                    config.current_state = GameState.LEVEL15#结束界面
                     self.transition_end_over = False
 
             
@@ -391,20 +384,48 @@ class Level9(BaseLevel):
         self.screen.blit(self.bgside, (0, 0))
         self.screen.blit(self.bg, (200, 0))
 
-        self.appicon.draw_icon(self.screen,25)  # 绘制应用图标  
-
-
-
         
-        if self.is_error_display1:
-            self.screen.blit(self.error1_1, (400, 300))
 
 
+
+
+
+
+
+        self.appicon.draw_icon(self.screen,13)  # 绘制应用图标
         self.appicon.draw_window(self.screen)
+
+        if self.appicon.current_folder == 13:
+            if self.is_dragon_display:
+                self.screen.blit(self.dragon_icon, (680 , 390))
+                dragon_text = self.font_small.render("神龙！", True, (100, 0, 80))
+                self.screen.blit(dragon_text, (680 , 435))
+
+
+            #pygame.draw.rect(self.screen, (255, 0, 0), self.paste_area, 2)
+            for i in range(1, self.dragonball_num + 1):
+                
+                self.screen.blit(self.dragonball, (680 + (i - 1) * 80, 300))
+
+                if i == 1:
+                    text = "    龙珠"
+                else:
+                    text = f"龙珠( {i - 1} )"
+                
+                dragonball_text = self.font_small.render(text, True, (100, 0, 80))
+                self.screen.blit(dragonball_text, (660 + (i - 1) * 80, 345))
+                self.dragonball_paste_rect=pygame.Rect(680,300,40+(i - 1) * 80,40)
+
+            if self.is_dragon_img_display:
+                self.screen.blit(self.dragon, (700 , 300))
+
+
+
+
 
 
         self.statebox.draw_state_box(self.screen,True,False)
-        date_text = self.font.render("Day 8", True, (255, 255, 255))
+        date_text = self.font.render("Day 3", True, (255, 255, 255))
         self.screen.blit(date_text,(1380,910))
 
         if self.is_clicked_state:
@@ -419,24 +440,24 @@ class Level9(BaseLevel):
             self.password_window.draw(self.screen,(850,400),self.is_password_get)
 
         
+
         self.rightmenu.draw(self.screen)
 
         self.tball.draw(self.screen,False,self.tball_pos)
+
+
+
+
 
 
         if self.is_level_end:
             self.screen.blit(self.star,(350,850))
 
         
-        if self.is_error_display2 and self.error2_positions:
-            for i in range(min(self.is_error_display2_num, 16)): 
-                x, y = self.error2_positions[i]
-                self.screen.blit(self.error2_1, (x, y))
+
 
         if self.gameMode==1:
             self.dialog(self.screen)
-
-
 
 
 
@@ -446,12 +467,11 @@ class Level9(BaseLevel):
         if self.isopen:
             self.transition.draw(0, 1, self.screen)
 
-        if self.is_clicked_start_off:
-            self.transition_end.draw(0, 0, self.screen)
-        elif self.is_level_end and self.is_clicked_start_sleep:
+        if self.is_level_end and self.is_clicked_start_sleep:
             self.transition_end.draw(0, 0, self.screen)
 
-        if config.current_state == GameState.LEVEL10:  # 防止过渡完成后原场景会闪现一下
+
+        if config.current_state == GameState.LEVEL15:  # 防止过渡完成后原场景会闪现一下
             self.screen.fill((0, 0, 0))
 
 

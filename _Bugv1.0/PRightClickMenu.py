@@ -39,8 +39,8 @@ class ContextMenu:
         self.options = [
             {'text': "复制", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'copy'},
             {'text': "粘贴", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'paste'},
-            {'text': "无可粘贴选项", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'no_paste'},
-            {'text': " ", 'rect': pygame.Rect(0, 0, 0, 0), 'action': 'item_click'},
+            {'text': "删除", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'delete'},
+            {'text': "666 ", 'rect': pygame.Rect(0, 0, 0, 0), 'action': 'item_click'},
             {'text': "当前无操作权限", 'rect': pygame.Rect(0, 0, 160, 40), 'action': 'cant'}
         ]
 
@@ -105,6 +105,8 @@ class ContextMenu:
             elif self.menu_state == 1:  #点击粘贴，返回1
                 print("粘贴",self.menu_state )
                 self.return_value = 1
+            elif self.menu_state==2:
+                self.return_value=2
             elif self.menu_state==4:
                 print("禁用右键操作",self.menu_state )
                 self.return_value=4

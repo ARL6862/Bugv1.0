@@ -11,6 +11,7 @@ class BaseLevel:
         self.res_mgr = res_mgr
         self._keys_pressed = pygame.key.get_pressed()
         self._events = []
+        
 
     def handle_events(self, events):
         #处理事件列表

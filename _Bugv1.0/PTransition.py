@@ -85,3 +85,82 @@ class TransitionManager:
 
     def is_active(self):
         return self.transition_active or self.is_showing_text
+    
+
+
+
+
+
+
+class FadeEffect:
+    def __init__(self, image, pos):
+        """
+        基础图像效果类
+        
+        参数:
+        - image: 要显示的图片(Surface对象)
+        - pos: 图片左上角位置(x, y)
+        """
+        self.original_image = image
+        self.image = image.copy()  # 创建副本用于修改alpha
+        self.pos = pos
+        self.current_time = 0
+        self.finished = False
+        self.active = False
+        
+    def start(self):
+        """激活效果"""
+        self.current_time = 0
+        self.finished = False
+        self.active = True
+        
+    def update(self, dt):
+        """更新效果状态"""
+        if not self.active or self.finished:
+            return
+            
+        self.current_time += dt
+        self._update_effect()
+        
+    def draw(self, screen):
+        """绘制图片"""
+        if self.active and not self.finished:
+            screen.blit(self.image, self.pos)
+    
+    def is_finished(self):
+        """检查效果是否已完成"""
+        return self.finished
+    
+    def reset(self):
+        """重置效果"""
+        self.current_time = 0
+        self.finished = False
+        self.active = False
+
+class FadeIn(FadeEffect):
+    def __init__(self, image, pos, fade_time):
+        super().__init__(image, pos)
+        self.fade_time = fade_time
+        self.image.set_alpha(0)  # 初始完全透明
+        
+    def _update_effect(self):
+        progress = min(1.0, self.current_time / self.fade_time)
+        alpha = int(255 * progress)
+        self.image.set_alpha(alpha)
+        
+        if progress >= 1.0:
+            self.finished = True
+
+class FadeOut(FadeEffect):
+    def __init__(self, image, pos, fade_time):
+        super().__init__(image, pos)
+        self.fade_time = fade_time
+        self.image.set_alpha(255)  # 初始完全不透明
+        
+    def _update_effect(self):
+        progress = min(1.0, self.current_time / self.fade_time)
+        alpha = int(255 * (1.0 - progress))
+        self.image.set_alpha(alpha)
+        
+        if progress >= 1.0:
+            self.finished = True

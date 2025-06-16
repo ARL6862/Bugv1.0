@@ -90,3 +90,12 @@ class MusicManager:
             self.current_bgm = None
 
 music_manager = MusicManager()
+
+
+
+class EndingManager:
+    def __init__(self):
+        self.is_True_end_get=False
+        self.is_True_end_start=False
+
+ending_manager=EndingManager()
